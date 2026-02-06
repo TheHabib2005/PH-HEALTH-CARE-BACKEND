@@ -4,11 +4,12 @@ import { applyMiddleware } from "./middleware";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFound } from "./middleware/notFound";
 import authRoutes from "./modules/auth/auth.route";
-
+import { auth } from "./lib/auth";
+import {  toNodeHandler } from "better-auth/node";
 const app: Express = express();
 app.set("trust proxy", 1);
+app.all('/api/auth/*splat', toNodeHandler(auth));
 applyMiddleware(app);
-
 app.use("/api/auth", authRoutes); // auth routes
 app.get("/health", (_req, res) =>
   res.status(200).json({
