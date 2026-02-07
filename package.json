@@ -1,8 +1,7 @@
 {
-  "name": "prisma-typescript-backend",
+  "name": "PH-Health-Care-Backend",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/src/index.js",
   "type": "module",
   "scripts": {
     "dev": "npx tsx watch src/server.ts",

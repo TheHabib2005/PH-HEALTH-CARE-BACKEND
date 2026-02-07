@@ -321,7 +321,7 @@ export type UserCreateInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean
@@ -338,7 +338,7 @@ export type UserUncheckedCreateInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean
@@ -389,7 +389,7 @@ export type UserCreateManyInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean
@@ -536,7 +536,7 @@ export type UserCreateWithoutSessionsInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean
@@ -552,7 +552,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean
@@ -616,7 +616,7 @@ export type UserCreateWithoutAccountsInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean
@@ -632,7 +632,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   email: string
   role: $Enums.UserRole
   status: $Enums.UserStatus
-  deletedAt: Date | string
+  deletedAt?: Date | string
   needPasswordChange: boolean
   isDeleted: boolean
   emailVerified?: boolean

@@ -1,65 +1,50 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { envConfig } from "../config/env";
+import { auth } from "../lib/auth";
+import { sendError } from "../utils/apiResponse";
 
-const JWT_SECRET = envConfig.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET is not defined");
-}
-
-
-export interface AuthRequest extends Request {
-  user?: {
-    userId: string;
-    role: "STUDENT" | "TUTOR" | "ADMIN";
-  };
-}
 
 export async function authMiddleware(
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const cookieToken = req.cookies?.token;
+    // GETTING SESSION
+    const session = await auth.api.getSession({
+      headers: req.headers as any
+    });
 
-    const headerToken = req.headers.authorization?.startsWith("Bearer ")
-      ? req.headers.authorization.split(" ")[1]
-      : null;
-
-    const token = cookieToken || headerToken;
-
-    if (!token) {
-      return res.status(401).json({ error: "Authentication token missing" });
+    // IF SESSION IS NOT FOUND
+    if (!session) {
+      return sendError(res, {
+        message: "Unauthorized: Session expired or missing",
+        statusCode: 401,
+        errors: { message: "Unauthorized: Session expired or missing" }
+      })
     }
 
-    const payload =  jwt.verify(token, JWT_SECRET) as JwtPayload;
+    // SAVED USER INFO IN REQUEST
+    res.locals.user = session.user;
+    res.locals.session = session.session;
 
-    if (!payload?.userId || !payload?.role) {
-      return res.status(401).json({ error: "Invalid token payload" });
-    }
- 
-    
-
-
-    req.user = {
-      userId: payload.userId,
-      role: payload.role,
+    res.locals.auth = {
+      userId: session.user.id,
+      role: session.user.role as "DOCTOR" || "PATIENT" || "ADMIN",
     };
 
-    next();
-  } catch(error) {
-    console.log("error",error);
-    
-    return res.status(401).json({ error: "Invalid or expired token" });
+    return next();
+  } catch (error) {
+    console.error("Auth Middleware Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error during authentication"
+    });
   }
 }
-
-
 export function roleMiddleware(allowedRoles: ("STUDENT" | "TUTOR" | "ADMIN")[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).user;
-   
+
     if (!user || !allowedRoles.includes(user.role)) {
       return res.status(403).json({ error: "Forbidden: Insufficient role" });
     }

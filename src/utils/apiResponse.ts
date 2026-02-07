@@ -39,7 +39,6 @@ export const sendError = (
     success: false,
     message,
     errors,
-
     meta: {
       timestamp: new Date().toISOString(),
     },

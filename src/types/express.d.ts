@@ -1,13 +1,17 @@
 
+import { User, Session } from "better-auth";
+import { UserRole } from "../generated/prisma/enums";
 
 declare global {
   namespace Express {
-    interface Request {
-      user?: {
-        userId:string;
-        
-        role:"STUDENT"|"TUTOR"|"ADMIN";
-      } 
+    interface Locals {
+      user: User;
+      session: Session;
+      // Your custom mapped data
+      auth: {
+        userId: string;
+        role: UserRole
+      }
     }
   }
 }
