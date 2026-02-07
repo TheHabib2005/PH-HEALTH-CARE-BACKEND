@@ -2,7 +2,7 @@ export type RegisterPayload = {
   name: string;
   email: string;
   password: string;
-  role?: "STUDENT" | "TUTOR"; // optional, default = STUDENT
+  role?: "DOCTOR" | "PATIENT"; // optional, default = STUDENT
 };
 
 export type LoginPayload = {
