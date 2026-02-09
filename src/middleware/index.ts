@@ -17,7 +17,7 @@ const apiLimiter = rateLimit({
 });
 
 export const applyMiddleware = (app: Express): void => {
-  app.use(httpLogger);
+  // app.use(httpLogger);
   app.use(helmet());
   app.use(hpp());
   app.use(apiLimiter);

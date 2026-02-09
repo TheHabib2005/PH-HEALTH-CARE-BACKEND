@@ -17,7 +17,13 @@ const envSchema = z.object({
   ),
   CLOUDINARY_SECRET: z.string(),
   CLOUDINARY_KEY: z.string(),
-  CLOUDINARY_NAME: z.string()
+  CLOUDINARY_NAME: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PASSWORD: z.string(),
+  REDIS_USERNAME: z.string(),
+  GMAIL_APP_PASSWORD: z.string(),
+  FORM_EMAIL: z.string(),
+  REDIS_PORT: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

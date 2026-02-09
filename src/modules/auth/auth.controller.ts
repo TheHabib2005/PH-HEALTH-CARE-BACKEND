@@ -13,6 +13,7 @@ const registerController = asyncHandler(async (req: Request, res: Response) => {
       })
 
       return sendSuccess(res,{
+        statusCode:201,
         data:user,
         message:"Account Created Successfully"
       })
@@ -33,6 +34,7 @@ const loginController = asyncHandler(async (req: Request, res: Response) => {
   // 4. Return the user/data as JSON
   const data = await response.json();
  return sendSuccess(res,{
+  statusCode:200,
     data,
     message:"your are LoggedIn Sucessfully"
  })

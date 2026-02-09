@@ -4,7 +4,7 @@ import { AppError } from "../../utils/AppError";
 import type { LoginPayload, RegisterPayload } from "./types";
 
 // -------------------- REGISTER --------------------
-const registerUser = async (payload: RegisterPayload) => {
+const registerUser = async (payload: RegisterPayload):Promise<any> =>  {
 
   const { user } = await auth.api.signUpEmail({
     body: payload
@@ -13,7 +13,7 @@ const registerUser = async (payload: RegisterPayload) => {
 };
 
 // -------------------- LOGIN --------------------
-const loginUser = async (payload: LoginPayload) => {
+const loginUser = async (payload: LoginPayload):Promise<any> => {
   const response = await auth.api.signInEmail({
     body: payload,
     asResponse: true,

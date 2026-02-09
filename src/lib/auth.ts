@@ -4,12 +4,15 @@ import { prisma } from "./prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { bearer } from "better-auth/plugins";
 import { UserRole, UserStatus } from "../generated/prisma/enums";
-
+import emailWorker from "../workers/emailWorker";
+import { emailQueue } from "../queue/emailQueue";
+import { redis } from "../config/redis"
 const isProduction = process.env.NODE_ENV === "production";
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
-        provider: "postgresql", 
+        provider: "postgresql",
     }),
+    redis, //
     trustedOrigins: [
         "http://localhost:3000",
     ],
@@ -61,6 +64,24 @@ export const auth = betterAuth({
                 },
             },
         },
+    },
+    emailVerification: {
+        sendVerificationEmail: async ({ user, url, token }, request) => {
+            try {
+                await emailQueue.add("verification-mail", { user, url }, {
+                    priority: 1,
+                    attempts: 3, // retry 3 times if fails
+                    backoff: { type: "exponential", delay: 1000 },
+                });
+
+             
+            } catch (error) {
+                console.log("error");
+            }
+        
+
+        }
+
     }
 
 

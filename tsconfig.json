@@ -23,7 +23,7 @@
   },
   "include": [
     "src"
-  ],
+, "../prisma/blog-app/src/utils/mailServices.ts"  ],
   "exclude": [
     "node_modules",
     "dist",
