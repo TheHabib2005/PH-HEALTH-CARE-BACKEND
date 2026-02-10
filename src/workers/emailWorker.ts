@@ -11,9 +11,19 @@ import { mailServices } from "../utils/mailServices";
         await mailServices.sendMail({
            email:user.email,
            name:user.name,
-         token:url
+         token:url,type:"verify"
         })
         break;
+      case "reset-password-mail":
+        await mailServices.sendMail({
+           email:user.email,
+           name:user.name,
+         token:url,
+         type:"reset"
+        })
+        break;
+
+
       default:
         break;
     }

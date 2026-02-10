@@ -8,6 +8,8 @@ import { UserStatus } from "../../generated/prisma/enums";
 import status from "http-status"
 import { CookieUtils } from "../../utils/cookie";
 import { envConfig } from "../../config/env";
+import { jwtUtils } from "../../utils/jwt";
+import { JwtPayload } from "jsonwebtoken";
 const isProduction = envConfig.NODE_ENV === "production";
 
 // -------------------- REGISTER --------------------
@@ -198,5 +200,84 @@ const changePassword = async (payload: IChangePassword) => {
     }
 }
 
+const getAllNewTokens = async (refreshToken: string, sessionToken: string) => {
+    // 1. Verify Session if exist or not
+    const session = await prisma.session.findUnique({
+        where: { token: sessionToken },
+    });
 
-export const authServices = { registerPatient, loginUser, getUserProfile, logoutUser,changePassword };
+    if (!session) {
+        throw new AppError("Invalid session token", status.UNAUTHORIZED);
+    }
+
+    // 2. Verify Refresh Token
+    const verified = jwtUtils.verifyToken(refreshToken, envConfig.REFRESH_TOKEN_SECRET);
+
+    if (!verified.success || !verified.data) {
+        throw new AppError("Invalid refresh token", status.UNAUTHORIZED);
+    }
+
+    const payload = verified.data as JwtPayload;
+
+    // 3. Generate new tokens (Cleaned up by passing the payload directly)
+    const tokenPayload = {
+        userId: payload.userId,
+        role: payload.role,
+        name: payload.name,
+        email: payload.email,
+        status: payload.status,
+        isDeleted: payload.isDeleted,
+        emailVerified: payload.emailVerified,
+    };
+// creating a new tokens
+    const accessToken = tokenUtils.getAccessToken(tokenPayload);
+    const newRefreshToken = tokenUtils.getRefreshToken(tokenPayload);
+
+    // 4. Update session expiry
+    const updatedSession = await prisma.session.update({
+        where: { token: sessionToken },
+        data: {
+            expiresAt: new Date(Date.now() + 60 * 60 * 24 * 1000), // Fixed: 24 hours
+            updatedAt: new Date(),
+        }
+    });
+
+    return {
+        accessToken,
+        refreshToken: newRefreshToken,
+        sessionToken: updatedSession.token,
+    };
+};
+
+const requestResetPassword = async (email:string)=>{
+    const response = await auth.api.requestPasswordReset({
+    body:{
+        email
+    }
+
+});
+
+ if(response.status === true){
+    return true
+ }
+ return false
+
+}
+const resetPassword = async (newPassword:string,token:string)=>{
+    const response = await auth.api.resetPassword({
+    body:{
+
+        token,
+        newPassword
+    }
+
+});
+
+ if(response.status === true){
+    return true
+ }
+ return false
+
+}
+
+export const authServices = { registerPatient, loginUser, getUserProfile, logoutUser,changePassword,getAllNewTokens,requestResetPassword,resetPassword };

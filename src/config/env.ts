@@ -7,7 +7,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(8000),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   DATABASE_URL: z.string().url(),
-
+  CLIENT_URL: z.string(),
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().default('1d'),
   BCRYPT_SALT_ROUNDS: z.coerce.number().int().min(4).max(31).default(12),

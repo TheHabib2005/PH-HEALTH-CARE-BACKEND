@@ -7,11 +7,6 @@ import { validateRequest } from "../../middleware/validateRequest";
 
 const router: Router = Router();
 
-router.post(
-  "/create",
-
-
-);
 
 
 

@@ -12,22 +12,21 @@ const specialityRouter: Router = Router();
 
 specialityRouter.post(
   "/",
-//  authMiddleware,
-//  roleMiddleware(["ADMIN"]),
+ authMiddleware,
+ roleMiddleware(["ADMIN"]),
  validateRequest(specialitySchemas.createSpecialitySchema),
  specialityControllers.createSpecialityController
 );
 
 specialityRouter.get(
   "/",
-
  specialityControllers.getAllSpecialties
 );
 
 specialityRouter.delete(
   "/:id",
-//  authMiddleware,
-//  roleMiddleware(["ADMIN"]),
+ authMiddleware,
+ roleMiddleware(["ADMIN"]),
  specialityControllers.deleteSpecialty
 );
 

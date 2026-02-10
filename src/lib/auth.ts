@@ -47,6 +47,23 @@ export const auth = betterAuth({
         enabled: true,
         autoSignIn: false,
         requireEmailVerification: true,
+          sendResetPassword: async ({user, url, token}, request) => {
+  try {
+                await emailQueue.add("reset-password-mail", { user, url }, {
+                    priority: 1,
+                    attempts: 3, // retry 3 times if fails
+                    backoff: { type: "exponential", delay: 1000 },
+                });
+
+             
+            } catch (error) {
+                console.log("Failed to send reset-password email");
+            }
+    },
+    onPasswordReset: async ({ user }, request) => {
+      // your logic here
+      console.log(`Password for user ${user.email} has been reset.`);
+    },
     },
 
     advanced: {
@@ -87,13 +104,14 @@ export const auth = betterAuth({
 
              
             } catch (error) {
-                console.log("error");
+                console.log("Failed to send verification email");
             }
         
 
         }
 
-    }
+    },
+    
 
 
 

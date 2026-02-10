@@ -64,10 +64,10 @@ const getUserProfileController = asyncHandler(async (req: Request, res: Response
 // -------------------- LOGOUT --------------------
 const logoutUserController = asyncHandler(async (req: Request, res: Response) => {
 
-  const authToken = req.headers.authorization?.split(" ")[1]
+ 
   const better_auth_session_token = req.cookies["better-auth.session_token"]
  
-  const user = await authServices.logoutUser(better_auth_session_token||authToken!)
+  const user = await authServices.logoutUser(better_auth_session_token)
      CookieUtils.clearCookie(res, "accessToken", {
         httpOnly: true,
         secure: isProduction,
@@ -98,14 +98,14 @@ const logoutUserController = asyncHandler(async (req: Request, res: Response) =>
 // -------------------- CHANGE PASSWORD --------------------
 const changePasswordController = asyncHandler(async (req: Request, res: Response) => {
 
-  const authToken = req.headers.authorization?.split(" ")[1]
+ 
  
   const better_auth_session_token = req.cookies["better-auth.session_token"];
 
   const {currentPassword,newPassword} = req.body
 
   const user = await authServices.changePassword({
-    sessionToken:better_auth_session_token || authToken!,
+    sessionToken:better_auth_session_token,
     currentPassword,
     newPassword
   })
@@ -116,7 +116,60 @@ const changePasswordController = asyncHandler(async (req: Request, res: Response
     message: "Password change Successfully"
   })
 });
+// -------------------- REFRESH TOKEN --------------------
+const getRefreshTokenController = asyncHandler(async (req: Request, res: Response) => {
+
+ 
+         const refreshToken = req.cookies.refreshToken;
+         const sessionToken = req.cookies["better-auth.session_token"];
+        if (!refreshToken) {
+            throw new AppError( "Refresh token is missing",status.UNAUTHORIZED);
+        }
+ 
+  const result = await authServices.getAllNewTokens(refreshToken,sessionToken)
+ console.log(sessionToken);
+ 
+
+  tokenUtils.setAccessTokenCookie(res,result.accessToken)
+  tokenUtils.setRefreshTokenCookie(res,result.refreshToken)
+  tokenUtils.setBetterAuthSessionCookie(res,result.sessionToken)
+
+  return sendSuccess(res, {
+    statusCode:201,
+    message: "refresh token generate Successfully",
+    data:result
+  })
+});
+// -------------------- REQUEST FOR RESET PASSWORD MAIL --------------------
+const requestPasswordResetController = asyncHandler(async (req: Request, res: Response) => {
+
+  const {email} = req.body;
+ 
+ 
+  const result = await authServices.requestResetPassword(email)
+
+  return sendSuccess(res, {
+    statusCode:201,
+    message: "Reset Password Link successFully send; Check Index",
+  })
+});
+// --------------------  RESET PASSWORD MAIL --------------------
+const resetPasswordController = asyncHandler(async (req: Request, res: Response) => {
+
+  const {newPassword} = req.body;
+  const {token} = req.query 
+ 
+  const result = await authServices.resetPassword(newPassword,token as string)
+  return sendSuccess(res, {
+    statusCode:201,
+    message: "Your Reset Password  successFully",
+  })
+});
+
+
 
 export const authControllers = { registerController, loginController, getUserProfileController,logoutUserController,
-  changePasswordController
+  changePasswordController,
+  getRefreshTokenController,
+  requestPasswordResetController,resetPasswordController
  };

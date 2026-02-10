@@ -1,31 +1,63 @@
-
 import { AppError } from "./AppError";
 import { mailTransport } from "./mailTransporter";
 
- async function sendMail(data:{email:string,name:string,token:string}) {
-  try {
-const mailOptions = {
-    from: '"Skill-Bridge Team" <noreply@skill-bridge.com>',
-    to: data.email,
-    subject: 'Verify your Skill-Bridge Account',
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
-        <h2>Hello ${data.name}, Welcome to Skill-Bridge!</h2>
-        <p>Thanks for signing up. Please click the button below to verify your email address:</p>
-        <a href="http://localhost:3000${data.token}" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-          Verify Email
-        </a>
-        <p>If the button doesn't work, copy and paste this link: <br>http://localhost:3000${data.token} </p>
-      </div>
-    `
-  };
+type MailType = 'verify' | 'reset';
 
-   const res = await mailTransport.sendMail(mailOptions);
-    return res;
-  } catch (error) {
-    console.error(error);
-    throw new AppError("Failed to send mail", 400);
-  }
-};
+interface MailData {
+    email: string;
+    name: string;
+    token: string;
+    type: MailType;
+}
 
-export const mailServices = {sendMail}
+async function sendMail(data: MailData) {
+    try {
+        const isVerify = data.type === 'verify';
+        
+        const subject = isVerify 
+            ? 'Verify your Skill-Bridge Account' 
+            : 'Reset your Skill-Bridge Password';
+
+        const title = isVerify 
+            ? `Welcome to Skill-Bridge, ${data.name}!` 
+            : `Password Reset Request`;
+
+        const bodyText = isVerify
+            ? 'Thanks for signing up. Please click the button below to verify your email address:'
+            : 'We received a request to reset your password. Click the button below to choose a new one:';
+
+        const buttonText = isVerify ? 'Verify Email' : 'Reset Password';
+        
+        // Adjust these routes based on your frontend setup
+        const link = isVerify 
+            ? `http://localhost:3000/verify-email?token=${data.token}`
+            : `http://localhost:3000/reset-password?token=${data.token}`;
+
+        const mailOptions = {
+            from: '"Skill-Bridge Team" <noreply@skill-bridge.com>',
+            to: data.email,
+            subject: subject,
+            html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
+                <h2 style="color: #333;">${title}</h2>
+                <p style="color: #555; line-height: 1.5;">${bodyText}</p>
+                <div style="margin: 30px 0;">
+                    <a href="${link}" style="background: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                        ${buttonText}
+                    </a>
+                </div>
+                <p style="font-size: 12px; color: #888;">If the button doesn't work, copy and paste this link: <br>${link}</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin-top: 20px;">
+                <p style="font-size: 11px; color: #aaa;">If you did not request this email, please ignore it.</p>
+            </div>
+            `
+        };
+
+        return await mailTransport.sendMail(mailOptions);
+    } catch (error) {
+        console.error("Mail Error:", error);
+        throw new AppError("Failed to send mail", 400);
+    }
+}
+
+export const mailServices = { sendMail };

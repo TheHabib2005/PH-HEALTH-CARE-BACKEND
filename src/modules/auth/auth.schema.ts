@@ -46,4 +46,4 @@ const changePasswordSchema = z.object({
 
 
 
-export const authSchemas = { registerUserSchema, loginUserSchema,changePasswordSchema };
+export const authSchemas = { registerUserSchema, loginUserSchema,changePasswordSchema};

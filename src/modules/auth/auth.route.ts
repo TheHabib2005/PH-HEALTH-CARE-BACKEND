@@ -29,10 +29,24 @@ router.get(
 authMiddleware,
   authControllers.logoutUserController
 );
+router.get(
+  "/refresh-token",
+authMiddleware,
+  authControllers.getRefreshTokenController
+);
+router.post(
+  "/request-reset-password",
+
+  authControllers.requestPasswordResetController
+);
 router.put(
   "/change-password",
 authMiddleware,
 validateRequest(authSchemas.changePasswordSchema),
   authControllers.changePasswordController
+);
+router.put(
+  "/reset-password",
+  authControllers.resetPasswordController
 );
 export default router;
