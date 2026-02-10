@@ -1,31 +1,35 @@
 import { Request, Response } from "express";
 import { auth } from "../../lib/auth";
 import { AppError } from "../../utils/AppError";
-import type { ILoginUserPayload, IRegisterPayload, IRequestUser,  } from "./user.interface";
+import type { ILoginUserPayload, ILogoutUser, IRegisterPayload, IRequestUser, } from "./user.interface";
 import { prisma } from "../../lib/prisma";
 import { tokenUtils } from "../../utils/token";
 import { UserStatus } from "../../generated/prisma/enums";
 import status from "http-status"
+import { CookieUtils } from "../../utils/cookie";
+import { envConfig } from "../../config/env";
+const isProduction = envConfig.NODE_ENV === "production";
+
 // -------------------- REGISTER --------------------
-const registerPatient = async (payload: IRegisterPayload):Promise<any> =>  {
+const registerPatient = async (payload: IRegisterPayload): Promise<any> => {
 
-  const { user } = await auth.api.signUpEmail({
-    body: payload
-  });
-try {
+    const { user } = await auth.api.signUpEmail({
+        body: payload
+    });
+    try {
 
-    const patient = await prisma.$transaction(async(tx)=>{
-      const patientTx = await tx.patient.create({
-        data:{
-          name:user.name,
-          email:user.email,
-          userId:user.id
-        }
-      });
-      return patientTx
-  })
+        const patient = await prisma.$transaction(async (tx) => {
+            const patientTx = await tx.patient.create({
+                data: {
+                    name: user.name,
+                    email: user.email,
+                    userId: user.id
+                }
+            });
+            return patientTx
+        })
 
-    const accessToken = tokenUtils.getAccessToken({
+        const accessToken = tokenUtils.getAccessToken({
             userId: user.id,
             role: user.role,
             name: user.name,
@@ -45,21 +49,22 @@ try {
             emailVerified: user.emailVerified,
         });
 
-  return { 
-    user,
-    patient,
-accessToken,
-refreshToken
-   };} catch (error) {
-    console.log("failed to register patient");
-    
-          await prisma.user.delete({
+        return {
+            user,
+            patient,
+            accessToken,
+            refreshToken
+        };
+    } catch (error) {
+        console.log("failed to register patient");
+
+        await prisma.user.delete({
             where: {
                 id: user.id
             }
         })
         throw error;
-}
+    }
 };
 
 // -------------------- LOGIN --------------------
@@ -69,7 +74,7 @@ refreshToken
 //     body: payload,
 //     asResponse: true,
 //   });
-  
+
 // };
 
 const loginUser = async (payload: ILoginUserPayload) => {
@@ -83,11 +88,11 @@ const loginUser = async (payload: ILoginUserPayload) => {
     })
 
     if (data.user.status === UserStatus.BANNED) {
-        throw new AppError( "User is blocked",status.FORBIDDEN);
+        throw new AppError("User is blocked", status.FORBIDDEN);
     }
 
     if (data.user.isDeleted || data.user.status === UserStatus.DELETED) {
-        throw new AppError("User is deleted",status.NOT_FOUND);
+        throw new AppError("User is deleted", status.NOT_FOUND);
     }
 
 
@@ -120,41 +125,60 @@ const loginUser = async (payload: ILoginUserPayload) => {
 
 }
 
-// -------------------- PROFILE --------------------
+// -------------------- USER PROFILE --------------------
 
 
-const getUserProfile = async (user : IRequestUser) => {
+const getUserProfile = async (user: IRequestUser) => {
     const isUserExists = await prisma.user.findUnique({
-        where : {
-            id : user.userId,
+        where: {
+            id: user.userId,
         },
-        include : {
-            patient : {
-                include : {
-                    appointment : true,
-                    reviews : true,
-                    prescription : true,
-                    medicalReports : true,
-                    patientHealthData : true,
+        include: {
+            patient: {
+                include: {
+                    appointment: true,
+                    reviews: true,
+                    prescription: true,
+                    medicalReports: true,
+                    patientHealthData: true,
                 }
             },
-            doctor : {
-                include : {
-                    specialty : true,
-                    appoinments : true,
-                    reviews : true,
-                    prescriptions : true,
+            doctor: {
+                include: {
+                    specialty: true,
+                    appoinments: true,
+                    reviews: true,
+                    prescriptions: true,
                 }
             },
-            admin : true,
+            admin: true,
         }
     })
 
     if (!isUserExists) {
-        throw new AppError("User not found",status.NOT_FOUND);
+        throw new AppError("User not found", status.NOT_FOUND);
     }
 
     return isUserExists;
 }
 
-export const authServices = { registerPatient, loginUser, getUserProfile };
+
+// -------------------- LOGOUT USER --------------------
+
+const logoutUser = async (sessionToken: string) => {
+
+        const result = await auth.api.signOut({
+        headers : new Headers({
+            Authorization : `Bearer ${sessionToken}`
+        })
+    })
+
+    return result;
+
+
+
+   
+}
+
+
+export const authServices = { registerPatient, loginUser, getUserProfile, logoutUser };

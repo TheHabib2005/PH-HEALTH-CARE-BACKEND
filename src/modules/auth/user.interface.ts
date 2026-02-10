@@ -16,3 +16,7 @@ export interface IRequestUser{
   role:string;
   userId:string;
 }
+export interface ILogoutUser{
+  role:string;
+  userId:string;
+}

@@ -2,7 +2,8 @@ import { z } from "zod";
 import { Gender } from "../../generated/prisma/enums";
 
  const createDoctorZodSchema = z.object({
-    password: z.string({ required_error: "Password is required" })
+  body:z.object({
+        password: z.string({ required_error: "Password is required" })
         .min(6, "Password must be at least 6 characters")
         .max(20, "Password must be at most 20 characters"),
     doctor: z.object({
@@ -42,6 +43,7 @@ import { Gender } from "../../generated/prisma/enums";
     // specialties should be an array of strings that follow UUID format
     specialties: z.array(z.string().uuid("Invalid Specialty ID"))
         .min(1, "At least one specialty is required")
+  })
 });
 
  const createAdminZodSchema = z.object({

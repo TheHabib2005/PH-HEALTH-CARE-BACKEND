@@ -4,6 +4,8 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { authServices } from "./auth.service";
 import { CookieUtils } from "../../utils/cookie";
 import { tokenUtils } from "../../utils/token";
+import { envConfig } from "../../config/env";
+const isProduction = envConfig.NODE_ENV === "production";
 
 // -------------------- REGISTER --------------------
 const registerController = asyncHandler(async (req: Request, res: Response) => {
@@ -48,7 +50,7 @@ const loginController = asyncHandler(async (req: Request, res: Response) => {
     message: "your are LoggedIn Sucessfully"
   })
 });
-// -------------------- LOGIN --------------------
+// -------------------- PROFILE DATA --------------------
 const getUserProfileController = asyncHandler(async (req: Request, res: Response) => {
 
   const user = await authServices.getUserProfile(res.locals.auth)
@@ -57,5 +59,39 @@ const getUserProfileController = asyncHandler(async (req: Request, res: Response
     message: "Profile Data fetch Successfully"
   })
 });
+// -------------------- LOGOUT --------------------
+const logoutUserController = asyncHandler(async (req: Request, res: Response) => {
 
-export const authControllers = { registerController, loginController, getUserProfileController };
+
+  const better_auth_session_token = req.cookies["better-auth.session_token"]
+
+  const user = await authServices.logoutUser(better_auth_session_token)
+     CookieUtils.clearCookie(res, "accessToken", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        path: '/',
+        maxAge: 15 * 60 * 1000,
+    })
+    CookieUtils.clearCookie(res, "refreshToken", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    CookieUtils.clearCookie(res, "better-auth.session_token", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        path: '/',
+        maxAge: 24 * 60 * 60 * 1000,
+    })
+  return sendSuccess(res, {
+    statusCode:200,
+    data: user,
+    message: "User Logout Successfully"
+  })
+});
+
+export const authControllers = { registerController, loginController, getUserProfileController,logoutUserController };
