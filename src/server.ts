@@ -1,13 +1,7 @@
-
 import { startServer } from "./app";
-import { connectToDatabase, prisma } from "./config/db";
-import { redis, startRedis } from "./config/redis";
-// server.ts
-import "./workers/emailWorker"; // ensures worker starts
-
-
+import { connectToDatabase } from "./config/db";
+import "./workers/emailWorker"; 
 (async () => {
   await connectToDatabase();
-  // await startRedis()
   await startServer();
 })();

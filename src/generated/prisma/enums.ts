@@ -51,7 +51,9 @@ export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 export const UserRole = {
   DOCTOR: 'DOCTOR',
-  PATIENT: 'PATIENT'
+  PATIENT: 'PATIENT',
+  ADMIN: 'ADMIN',
+  SUPER_ADMIN: 'SUPER_ADMIN'
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]

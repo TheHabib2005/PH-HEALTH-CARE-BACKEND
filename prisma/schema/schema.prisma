@@ -12,6 +12,8 @@ datasource db {
 enum UserRole {
   DOCTOR
   PATIENT
+  ADMIN
+  SUPER_ADMIN
   
 }
 enum UserStatus {

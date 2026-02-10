@@ -1,0 +1,49 @@
+{
+  "success": true,
+  "message": "Specialties fetched successfully",
+  "data": [
+    {
+      "id": "019c464a-225a-779e-baab-8bd1a65189dd",
+      "title": "Cardiology",
+      "description": "Heart and blood vessel specialist",
+      "icon": "https://static.vecteezy.com/system/resources/previews/048/313/621/non_2x/cardiology-icon-outline-collection-in-black-and-on-white-background-vector.jpg",
+      "createdAt": "2026-02-10T06:43:09.530Z",
+      "updatedAt": "2026-02-10T06:43:09.530Z",
+      "isDeleted": false,
+      "deletedAt": null
+    },
+    {
+      "id": "019c464d-1a75-7292-b69c-b5efb4cfd1c7",
+      "title": "Dermatology",
+      "description": "Diagnosis and treatment of skin, hair, and nail conditions.",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY2a09IBwQ5d8eJTfgeBDXT15Ovotn06l8uQ&s",
+      "createdAt": "2026-02-10T06:46:24.117Z",
+      "updatedAt": "2026-02-10T06:46:24.117Z",
+      "isDeleted": false,
+      "deletedAt": null
+    },
+    {
+      "id": "019c464f-c11c-776f-bb7a-bc0c5e1a611b",
+      "title": "Endocrinology",
+      "description": "Specialized care for hormone imbalances, diabetes, and metabolic disorders.",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-cfIga8yRhh5Kc3DXuehKKV-XXkuE_sc9tw&s",
+      "createdAt": "2026-02-10T06:49:15.324Z",
+      "updatedAt": "2026-02-10T06:49:15.324Z",
+      "isDeleted": false,
+      "deletedAt": null
+    },
+    {
+      "id": "019c464f-c11c-776f-bb7a-c25ebc89b97e",
+      "title": "Gastroenterology",
+      "description": "Comprehensive management of digestive system and gastrointestinal disorders.",
+      "icon": "https://static.vecteezy.com/system/resources/previews/032/221/269/non_2x/gastroenterology-icon-vector.jpg",
+      "createdAt": "2026-02-10T06:49:15.324Z",
+      "updatedAt": "2026-02-10T06:49:15.324Z",
+      "isDeleted": false,
+      "deletedAt": null
+    }
+  ],
+  "meta": {
+    "timestamp": "2026-02-10T07:01:00.420Z"
+  }
+}

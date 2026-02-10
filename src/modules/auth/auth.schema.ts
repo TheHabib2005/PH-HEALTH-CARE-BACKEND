@@ -33,4 +33,7 @@ const loginUserSchema = z.object({
   }),
 });
 
+
+
+
 export const authSchemas = { registerUserSchema, loginUserSchema };

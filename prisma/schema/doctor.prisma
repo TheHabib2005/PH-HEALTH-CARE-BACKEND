@@ -21,7 +21,7 @@ model Doctor {
     designation         String
     specialty           DoctorSpecialty[]
     prescriptions   Prescription[]
-    isDeleted           Boolean
+    isDeleted           Boolean 
     schedule            DoctorSchedules[]
     deletedAt           DateTime          @updatedAt
     createdAt           DateTime          @default(now())

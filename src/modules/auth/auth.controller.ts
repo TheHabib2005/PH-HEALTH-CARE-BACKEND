@@ -51,7 +51,7 @@ const loginController = asyncHandler(async (req: Request, res: Response) => {
 // -------------------- LOGIN --------------------
 const getUserProfileController = asyncHandler(async (req: Request, res: Response) => {
 
-  const user = await authServices.getUserProfile(res)
+  const user = await authServices.getUserProfile(res.locals.auth)
   return sendSuccess(res, {
     data: user,
     message: "Profile Data fetch Successfully"

@@ -56,14 +56,25 @@ export const auth = betterAuth({
             httpOnly: true,
         },
         trustProxy: true,
-        cookies: {
-            state: {
-                attributes: {
+        useSecureCookies : false,
+        cookies:{
+            state:{
+                attributes:{
                     sameSite: "none",
                     secure: true,
-                },
+                    httpOnly: true,
+                    path: "/",
+                }
             },
-        },
+            sessionToken:{
+                attributes:{
+                    sameSite: "none",
+                    secure: true,
+                    httpOnly: true,
+                    path: "/",
+                }
+            }
+        }
     },
     emailVerification: {
         sendVerificationEmail: async ({ user, url, token }, request) => {

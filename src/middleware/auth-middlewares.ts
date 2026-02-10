@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { auth } from "../lib/auth";
+import { prisma } from "../lib/prisma";
+import { CookieUtils } from "../utils/cookie";
 import { sendError } from "../utils/apiResponse";
-
 
 export async function authMiddleware(
   req: Request,
@@ -9,29 +9,57 @@ export async function authMiddleware(
   next: NextFunction
 ) {
   try {
-    // GETTING SESSION
-    const session = await auth.api.getSession({
-      headers: req.headers as any
-    });
+    const sessionToken = 
+      CookieUtils.getCookie(req, "better-auth.session_token") || 
+      (req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
 
-    // IF SESSION IS NOT FOUND
-    if (!session) {
+    if (!sessionToken) {
       return sendError(res, {
-        message: "Unauthorized: Session expired or missing",
-        statusCode: 401,
-        errors: { message: "Unauthorized: Session expired or missing" }
-      })
+        message: "Unauthorized: No session token provided",
+        statusCode: 401
+      });
     }
 
-    // SAVED USER INFO IN REQUEST
-    res.locals.user = session.user;
-    res.locals.session = session.session
+    const sessionData = await prisma.session.findUnique({
+      where: {
+        token: sessionToken,
+        expiresAt: { gt: new Date() }
+      },
+      include: { user: true }
+    });
+
+    if (!sessionData || !sessionData.user) {
+      return sendError(res, {
+        message: "Unauthorized: Invalid or expired session",
+        statusCode: 401
+      });
+    }
+
+    const { user } = sessionData;
+
+    if (user.status === "BANNED" || user.status === "DELETED") {
+      return sendError(res, {
+        message: `Unauthorized: Account is ${user.status.toLowerCase()}`,
+        statusCode: 403
+      });
+    }
+
+    const now = new Date().getTime();
+    const expiresAt = new Date(sessionData.expiresAt).getTime();
+    const createdAt = new Date(sessionData.createdAt).getTime();
+
+    const totalLifetime = expiresAt - createdAt;
+    const remainingTime = expiresAt - now;
+    const percentRemaining = (remainingTime / totalLifetime) * 100;
+
+    if (percentRemaining < 20) {
+      res.setHeader('X-Session-Refresh', 'true');
+      res.setHeader('X-Session-Expires-At', sessionData.expiresAt.toISOString());
+    }
 
     res.locals.auth = {
-      userId: session.user.id,
-      role: session.user.role as "DOCTOR" || "PATIENT" || "ADMIN",
-      patientEmail:session.user.role === "PATIENT" ? session.user.email : null,
-      doctorEmail:session.user.role === "DOCTOR" ? session.user.email : null
+      userId: user.id,
+      role: user.role
     };
 
     return next();
@@ -43,13 +71,18 @@ export async function authMiddleware(
     });
   }
 }
-export function roleMiddleware(allowedRoles: ("STUDENT" | "TUTOR" | "ADMIN")[]) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const user = (req as any).user;
 
-    if (!user || !allowedRoles.includes(user.role)) {
-      return res.status(403).json({ error: "Forbidden: Insufficient role" });
+export function roleMiddleware(allowedRoles: ("DOCTOR" | "PATIENT" | "ADMIN" | "SUPER_ADMIN")[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const auth = res.locals.auth;
+
+    if (!auth || !allowedRoles.includes(auth.role)) {
+      return res.status(403).json({ 
+        success: false,
+        error: "Forbidden: You do not have permission to perform this action" 
+      });
     }
+
     next();
   };
 }
