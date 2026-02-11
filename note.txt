@@ -1,82 +1,164 @@
-You are now building the CORE HOSPITAL MANAGEMENT UI for PH-HealthCare.
-This must look and behave like a REAL hospital SaaS platform.
-
-Tech stack remains the same (Next.js, TypeScript, shadcn/ui, React Query, Server Actions).
-
-BUILD ALL THESE PAGES:
-
-COMMON (ALL ROLES)
-- Profile (/profile)
-- Notifications (/notifications)
-- Settings (/settings)
-- Theme switcher (light/dark)
-
-PATIENT
-- Dashboard (/patient/dashboard)
-- Browse Doctors (/doctors) with filters & pagination
-- Doctor Details (/doctors/[id])
-- Book Appointment (/appointments/book/[doctorId])
-- My Appointments (/patient/appointments)
-- Prescriptions (/patient/prescriptions)
-- Medical Records upload/view (/patient/records)
-- Payments & invoices (/patient/payments)
-- Reviews (/patient/reviews)
-
-DOCTOR
-- Dashboard (/doctor/dashboard)
-- Schedule Management (/doctor/schedule)
-- Appointments (/doctor/appointments)
-- Patient Details (/doctor/patients/[id])
-- Prescription Editor (/doctor/prescriptions/create/[appointmentId])
-- Doctor Profile (/doctor/profile)
-
-REQUIREMENTS:
-- React Query for all GET requests
-- Server Actions + mutations for POST/PUT/DELETE
-- Optimistic updates where applicable
-- Skeleton loaders, empty states
-- Responsive tables → cards on mobile
-- Proper status badges
-
-UI must be modern, medical SaaS style, production-ready.
-
-
-// 3 
-
-You are building ADMIN and SUPER ADMIN modules for PH-HealthCare.
-This is an enterprise hospital system.
-
-BUILD THESE PAGES:
-
-ADMIN
-- Admin Dashboard (/admin/dashboard)
-- Doctor Management (/admin/doctors)
-- Patient Management (/admin/patients)
-- Appointment Overview (/admin/appointments)
-- Payments & revenue (/admin/payments)
-
-SUPER ADMIN
-- Super Admin Dashboard (/super-admin/dashboard)
-- Admin Management (/super-admin/admins)
-- Specialty Management (/super-admin/specialties)
-- System Logs & audit trail (/super-admin/logs)
-
-SYSTEM PAGES
-- 401 Unauthorized
-- 403 Forbidden
-- 404 Not Found
-- 500 Error
-- Global loading & skeleton pages
-- Empty state components
-
-GLOBAL REQUIREMENTS:
-- Role-based UI rendering (RBAC)
-- Protected layouts
-- Sidebar + mobile drawer
-- Reusable DataTable component
-- Filters, pagination, sorting
-- Dark & light mode
-- Toasts & confirmation modals
-
-Follow best industry practices.
-Generate scalable folder structure and production-ready UI.
+PH-HealthCare/
+│
+├── src/
+│   │
+│   ├── app/                                 # App Router (UI + Routes)
+│   │   │
+│   │   ├── (public)/                        # Public routes group
+│   │   │   ├── page.tsx
+│   │   │   └── layout.tsx
+│   │   │
+│   │   ├── (auth)/                          # Auth routes group
+│   │   │   ├── login/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── _components/
+│   │   │   │       └── login-form.tsx
+│   │   │   │
+│   │   │   ├── register/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── _components/
+│   │   │   │       └── register-form.tsx
+│   │   │   │
+│   │   │   └── layout.tsx
+│   │   │
+│   │   ├── dashboard/                       # Protected routes
+│   │   │   ├── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   │
+│   │   │   ├── users/
+│   │   │   │   ├── page.tsx
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── _components/
+│   │   │   │       └── users-table.tsx
+│   │   │   │
+│   │   │   └── jobs/
+│   │   │       ├── page.tsx
+│   │   │       └── _components/
+│   │   │           └── job-form.tsx
+│   │   │
+│   │   ├── api/                             # Route Handlers (Backend API)
+│   │   │   ├── auth/
+│   │   │   │   ├── login/route.ts
+│   │   │   │   ├── register/route.ts
+│   │   │   │   └── refresh/route.ts
+│   │   │   │
+│   │   │   ├── users/
+│   │   │   │   ├── route.ts
+│   │   │   │   └── [id]/route.ts
+│   │   │   │
+│   │   │   └── jobs/
+│   │   │       ├── route.ts
+│   │   │       └── [id]/route.ts
+│   │   │
+│   │   ├── actions/                         # Global Server Actions
+│   │   │   ├── auth.actions.ts
+│   │   │   ├── user.actions.ts
+│   │   │   └── job.actions.ts
+│   │   │
+│   │   ├── providers.tsx                    # React Query / Theme / Global Providers
+│   │   ├── layout.tsx
+│   │   ├── globals.css
+│   │   └── loading.tsx
+│   │
+│   │
+│   ├── features/                            # Feature-Based Modules (Core Architecture)
+│   │
+│   │   ├── auth/
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   │   ├── useLogin.ts
+│   │   │   │   ├── useRegister.ts
+│   │   │   │   └── useMe.ts
+│   │   │   │
+│   │   │   ├── services/
+│   │   │   │   └── auth.api.ts              # Axios calls
+│   │   │   │
+│   │   │   ├── server/
+│   │   │   │   └── auth.service.ts          # DB logic (Prisma)
+│   │   │   │
+│   │   │   ├── schemas/
+│   │   │   │   └── auth.schema.ts
+│   │   │   │
+│   │   │   └── types.ts
+│   │   │
+│   │   │
+│   │   ├── users/
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   │   ├── useUsers.ts
+│   │   │   │   └── useCreateUser.ts
+│   │   │   │
+│   │   │   ├── services/
+│   │   │   │   └── users.api.ts
+│   │   │   │
+│   │   │   ├── server/
+│   │   │   │   └── user.service.ts
+│   │   │   │
+│   │   │   ├── schemas/
+│   │   │   │   └── user.schema.ts
+│   │   │   │
+│   │   │   └── types.ts
+│   │   │
+│   │   │
+│   │   └── jobs/
+│   │       ├── components/
+│   │       ├── hooks/
+│   │       ├── services/
+│   │       ├── server/
+│   │       ├── schemas/
+│   │       └── types.ts
+│   │
+│   │
+│   ├── lib/                                  # Shared Utilities & Config
+│   │   │
+│   │   ├── api/
+│   │   │   ├── axios.ts                      # Axios instance
+│   │   │   ├── api-client.ts                 # Generic wrapper
+│   │   │   └── types.ts
+│   │   │
+│   │   ├── react-query/
+│   │   │   ├── query-client.ts
+│   │   │   └── provider.tsx
+│   │   │
+│   │   ├── db/
+│   │   │   └── prisma.ts
+│   │   │
+│   │   ├── auth/
+│   │   │   └── session.ts
+│   │   │
+│   │   ├── cors/
+│   │   │   └── cors.ts
+│   │   │
+│   │   ├── utils.ts
+│   │   └── constants.ts
+│   │
+│   │
+│   ├── hooks/                                # Global reusable hooks
+│   │   ├── useDebounce.ts
+│   │   └── useDisclosure.ts , useQUERY.ts,useMutation.ts 
+│   │
+│   │
+│   ├── store/                                # Zustand / Redux
+│   │   └── auth.store.ts
+│   │
+│   │
+│   ├── types/                                # Global types
+│   │   └── index.ts
+│   │
+│   │
+│   └── middleware.ts                         # Route protection
+│
+│
+├── public/
+│  SETUP TESTING UNIT AND integration
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│  
+│
+├── .env
+├── next.config.ts
+├── tsconfig.json
+├── package.json
+└── README.md
