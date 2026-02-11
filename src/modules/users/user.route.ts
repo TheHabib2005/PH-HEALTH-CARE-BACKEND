@@ -9,7 +9,8 @@ const router: Router = Router();
 
 router.post(
   "/create-doctor",
-
+  authMiddleware,
+  roleMiddleware(["SUPER_ADMIN","ADMIN"]),
   validateRequest(userZodSchemas.createDoctorZodSchema),
   userControllers.createDoctorController
 );
