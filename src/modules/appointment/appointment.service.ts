@@ -4,11 +4,7 @@ import { AppError } from "../../utils/AppError";
 import { ICreateAppointmentPayload } from "./appointment.interface";
 import { AppointmentStatus } from "../../generated/prisma/enums";
 
-//
-// ===============================
 // GET ALL APPOINTMENTS
-// ===============================
-//
 const getAllAppointments = async () => {
   const appointments = await prisma.appointment.findMany({
     orderBy: { createdAt: "desc" },
@@ -22,11 +18,7 @@ const getAllAppointments = async () => {
   return appointments;
 };
 
-//
-// ===============================
 // CREATE APPOINTMENT
-// ===============================
-//
 const createAppointment = async (payload: ICreateAppointmentPayload) => {
   const { doctorId, patientId, scheduleId } = payload;
   return await prisma.$transaction(async (tx) => {
@@ -96,11 +88,7 @@ const createAppointment = async (payload: ICreateAppointmentPayload) => {
   });
 };
 
-//
-// ===============================
 // GET APPOINTMENT BY ID
-// ===============================
-//
 const getAppointmentById = async (id: string) => {
   const appointment = await prisma.appointment.findUnique({
     where: { id },
@@ -121,11 +109,7 @@ const getAppointmentById = async (id: string) => {
   return appointment;
 };
 
-//
-// ===============================
 // CANCEL APPOINTMENT
-// ===============================
-//
 const cancelAppointment = async (id: string) => {
   return await prisma.$transaction(async (tx) => {
     const appointment = await tx.appointment.findUnique({

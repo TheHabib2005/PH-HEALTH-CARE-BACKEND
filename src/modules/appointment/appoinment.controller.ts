@@ -6,11 +6,8 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { appointmentServices } from "./appointment.service";
 import { sendSuccess } from "../../utils/apiResponse";
 
-/**
- * @desc    Get All Appointments
- * @route   GET /api/appointments
- * @access  Admin / Doctor
- */
+
+
 const getAllAppointments = asyncHandler(
   async (req: Request, res: Response) => {
     const result = await appointmentServices.getAllAppointments();
@@ -23,11 +20,7 @@ const getAllAppointments = asyncHandler(
   }
 );
 
-/**
- * @desc    Get Appointment By ID
- * @route   GET /api/appointments/:id
- * @access  Private
- */
+
 const getAppointmentById = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -46,11 +39,7 @@ const getAppointmentById = asyncHandler(
   }
 );
 
-/**
- * @desc    Create Appointment
- * @route   POST /api/appointments
- * @access  Patient
- */
+
 const createAppointment = asyncHandler(
   async (req: Request, res: Response) => {
     const payload = req.body;
@@ -65,11 +54,7 @@ const createAppointment = asyncHandler(
   }
 );
 
-/**
- * @desc    Cancel Appointment
- * @route   PATCH /api/appointments/:id/cancel
- * @access  Patient
- */
+
 const cancelAppointment = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
