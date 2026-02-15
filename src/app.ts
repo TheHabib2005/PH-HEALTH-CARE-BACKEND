@@ -13,8 +13,8 @@ const app: Express = express();
 
 
 app.set("trust proxy", 1);
-app.use("/api/auth",toNodeHandler(auth))
 applyMiddleware(app);
+app.use("/api/auth",toNodeHandler(auth))
 app.use("/api/v1",indexRouter)
 // 1. Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -43,7 +43,6 @@ app.get("/health",async (_req, res) =>{
 
 
 app.get("/", (req, res) => {
- 
   res.render("home");
 });
 

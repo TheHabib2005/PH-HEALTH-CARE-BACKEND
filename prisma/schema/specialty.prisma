@@ -12,9 +12,9 @@ model Specialty {
   deletedAt         DateTime?
   doctorSpecialties DoctorSpecialty[]
 
+  @@map("specialties")
   @@index([isDeleted], name: "idx_specialty_isDeleted")
   @@index([title], name: "idx_specialty_title")
-  @@map("specialties")
 }
 
 model DoctorSpecialty {

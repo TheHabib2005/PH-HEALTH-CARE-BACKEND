@@ -1,6 +1,7 @@
 export interface IRegisterPayload  {
   name: string;
   email: string;
+  contactNumber: string;
   password: string;
   role?: "DOCTOR" | "PATIENT"; // optional, default = STUDENT
 };

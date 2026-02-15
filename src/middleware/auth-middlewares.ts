@@ -12,6 +12,7 @@ export async function authMiddleware(
     const sessionToken = 
       CookieUtils.getCookie(req, "better-auth.session_token") || 
       (req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
+   
 
     if (!sessionToken) {
       return sendError(res, {
@@ -19,14 +20,18 @@ export async function authMiddleware(
         statusCode: 401
       });
     }
-
+    
+   const token = sessionToken.split(".")[0];
     const sessionData = await prisma.session.findUnique({
       where: {
-        token: sessionToken,
+        token: token,
         expiresAt: { gt: new Date() }
       },
       include: { user: true }
     });
+    console.log("session data",sessionData);
+    console.log("token",token);
+    
 
     if (!sessionData || !sessionData.user) {
       return sendError(res, {

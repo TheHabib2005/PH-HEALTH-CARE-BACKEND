@@ -19,7 +19,7 @@ model Doctor {
     qualification       String
     currentWorkingPlace String
     designation         String
-    specialty           DoctorSpecialty[]
+    specialtys           DoctorSpecialty[]
     prescriptions   Prescription[]
     isDeleted           Boolean 
     schedule            DoctorSchedules[]

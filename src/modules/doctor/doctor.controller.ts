@@ -28,7 +28,9 @@ const getDoctorById = asyncHandler(
 // ===============================
 const getAllDoctors = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await doctorServices.getAllDoctors(req.query);
+    const result = await doctorServices.getAllDoctors({
+      searchQuery:req.query.searchQuery as string
+    });
 
     return sendSuccess(res, {
       statusCode: status.OK,
@@ -45,7 +47,10 @@ const getAllDoctors = asyncHandler(
 const updateDoctor = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await doctorServices.updateDoctor(id as string, req.body);
+    const result = await doctorServices.updateDoctor({
+      doctorId:id as string,
+      data:req.body
+    });
     return sendSuccess(res, {
       statusCode: status.OK,
       data: result,

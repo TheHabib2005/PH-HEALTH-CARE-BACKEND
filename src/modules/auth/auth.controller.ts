@@ -12,10 +12,10 @@ const isProduction = envConfig.NODE_ENV === "production";
 
 // -------------------- REGISTER --------------------
 const registerController = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password ,contactNumber} = req.body;
 
   const result = await authServices.registerPatient({
-    name, email, password
+    name, email, password,contactNumber
   })
   return sendSuccess(res, {
     statusCode: 201,
@@ -175,6 +175,8 @@ const verifyEmail = asyncHandler(async (req, res) => {
   }
   try {
    await authServices.verifyEmail(token)
+   console.log(callbackURL);
+   
     return res.redirect(callbackURL as string);
   } catch (error: any) {
     return res.redirect(`${envConfig.CLIENT_URL}/verify-email-error`);
@@ -201,7 +203,7 @@ const googleLogin = asyncHandler(async (req: Request, res: Response) => {
 })
 
 const googleLoginSuccess = asyncHandler(async (req: Request, res: Response) => {
-  const redirectPath = req.query.redirect as string || "/dashboard";
+  const redirectPath = req.query.redirect as string || "/dashboard/patient";
 
   const sessionToken = req.cookies["better-auth.session_token"];
 
@@ -232,9 +234,10 @@ const googleLoginSuccess = asyncHandler(async (req: Request, res: Response) => {
   tokenUtils.setRefreshTokenCookie(res, refreshToken);
   // ?redirect=//profile -> /profile
   const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
-  const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
+  // const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
+console.log(redirectPath);
 
-  res.redirect(`${envConfig.CLIENT_URL}${finalRedirectPath}`);
+  res.redirect(`${envConfig.CLIENT_URL}${redirectPath}`);
 })
 
 const handleOAuthError = asyncHandler(async (req: Request, res: Response) => {

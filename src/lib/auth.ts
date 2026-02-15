@@ -14,7 +14,7 @@ export const auth = betterAuth({
         provider: "postgresql",
     }),
     redis, //
-    trustedOrigins: [process.env.BETTER_AUTH_URL || "http://localhost:5000", envConfig.CLIENT_URL],
+    trustedOrigins: [process.env.BETTER_AUTH_URL || "http://localhost:3000", envConfig.CLIENT_URL],
         redirectURLs:{
         signIn : `${envConfig.BETTER_AUTH_URL}/api/v1/auth/google/success`,
         
@@ -112,7 +112,7 @@ export const auth = betterAuth({
     emailVerification: {
         sendOnSignUp:true,
         sendVerificationEmail: async ({ user, url, token }, request) => {
-            const verifyLink = `${envConfig.BETTER_AUTH_URL}/api/v1/auth/verify-email?token=${token}&callbackURL=${envConfig.CLIENT_URL}/email-verified-success`
+            const verifyLink = `${envConfig.BETTER_AUTH_URL}/api/v1/auth/verify-email?token=${token}&callbackURL=${envConfig.CLIENT_URL}/email-verified-success?username=${user.name.replace(" ","")}&email=${user.email}`
             try {
                 await emailQueue.add("verification-mail", { user, verifyLink }, {
                     priority: 1,

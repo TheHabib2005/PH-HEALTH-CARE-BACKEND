@@ -1,9 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
 import { AppError } from '../utils/AppError';
-
-
-
-
 export const errorHandler = (err: any, _req: Request, res: Response, _next: NextFunction): void => {
   console.error("❌ Error:", err.stack || err);
 
@@ -11,7 +7,7 @@ export const errorHandler = (err: any, _req: Request, res: Response, _next: Next
 
   res.status(statusCode).json({
     success: false,
-    error: {message:err.message || "Internal Server Error"},
+    error: { message: err.message || "Internal Server Error" },
     stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 };

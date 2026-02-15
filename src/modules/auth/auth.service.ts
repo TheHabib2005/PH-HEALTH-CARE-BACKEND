@@ -29,6 +29,7 @@ const registerPatient = async (payload: IRegisterPayload) => {
         name: user.name,
         email: user.email,
         userId: user.id,
+        contactNumber:payload.contactNumber
       },
     });
 
@@ -85,7 +86,7 @@ const loginUser = async (payload: ILoginUserPayload) => {
 
   await redis.del(attemptKey);
 
-  return { accessToken, refreshToken, sessionToken };
+  return { accessToken, refreshToken, sessionToken,user:data.user };
 };
 
 const getAllNewTokens = async (

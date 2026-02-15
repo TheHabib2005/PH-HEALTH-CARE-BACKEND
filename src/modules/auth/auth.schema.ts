@@ -15,10 +15,10 @@ const registerUserSchema = z.object({
       .min(6, "Password must be at least 6 characters long"),
 
     role: z
-      .enum(["TUTOR", "STUDENT"], {
+      .enum(["PATIENT"], {
         errorMap: () => ({ message: "Role must be STUDENT or TUTOR" }),
       })
-      .default("STUDENT"),
+
   }),
 });
 
