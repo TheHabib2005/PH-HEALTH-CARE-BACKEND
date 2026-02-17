@@ -5,12 +5,12 @@ import { AppError } from "../../utils/AppError";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { appointmentServices } from "./appointment.service";
 import { sendSuccess } from "../../utils/apiResponse";
-
+import { v7 as uuidv7 } from "uuid";
 
 
 const getAllAppointments = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await appointmentServices.getAllAppointments();
+    const result = await appointmentServices.getAllAppointments(req.query as any);
 
     sendSuccess(res, {
       statusCode: status.OK,
@@ -43,6 +43,7 @@ const getAppointmentById = asyncHandler(
 const createAppointment = asyncHandler(
   async (req: Request, res: Response) => {
     const payload = req.body;
+     payload.videoCallingId = String(uuidv7())
 
     const result = await appointmentServices.createAppointment(payload);
 

@@ -60,6 +60,18 @@ export class QueryBuilder<T> {
     this.query.take = limit;
     return this;
   }
+  /**
+   * INCLUDE : পেজ এবং লিমিট ক্যালকুলেশন।
+   */
+ include(includeConfig?: Record<string, any>) {
+    if (includeConfig) {
+      this.query.include = includeConfig;
+    } else if (this.queryParams.includes) {
+      // যদি URL থেকে স্ট্রিং আসে তবে সেটা পার্স করা লাগতে পারে
+      this.query.include = this.queryParams.includes;
+    }
+    return this;
+  }
 
   /**
    * SORT: ডাইনামিক সর্টিং।
@@ -90,7 +102,7 @@ export class QueryBuilder<T> {
         total,
         totalPage: Math.ceil(total / limit),
       },
-      data,
+      ...data,
     };
   }
 

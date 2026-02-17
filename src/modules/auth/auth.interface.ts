@@ -15,6 +15,8 @@ export interface ILoginUserPayload  {
 export interface IRequestUser{
   role:string;
   userId:string;
+  email: string;
+
 }
 export interface IChangePassword{
   sessionToken:string;

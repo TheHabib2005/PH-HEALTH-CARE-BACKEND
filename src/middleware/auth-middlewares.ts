@@ -64,7 +64,8 @@ export async function authMiddleware(
 
     res.locals.auth = {
       userId: user.id,
-      role: user.role
+      role: user.role,
+      email: user.email
     };
 
     return next();

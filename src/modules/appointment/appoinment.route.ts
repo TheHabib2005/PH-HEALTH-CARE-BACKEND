@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/",
     authMiddleware,
-    roleMiddleware(["ADMIN", "DOCTOR", "SUPER_ADMIN"]),
+    roleMiddleware(["ADMIN", "SUPER_ADMIN"]),
     AppointmentController.getAllAppointments);
 router.get("/:id",
     authMiddleware,
@@ -19,6 +19,11 @@ router.post("/",
     roleMiddleware(["PATIENT"]),
     validateRequest(appointmentSchemas.createAppointmentZodSchema),
     AppointmentController.createAppointment);
+router.get("/:patientId",
+    authMiddleware,
+    roleMiddleware(["PATIENT"]),
+    // AppointmentController.getAppointmentPatientId
+);
 router.patch("/:id/cancel",
     authMiddleware,
     roleMiddleware(["ADMIN", "PATIENT", "SUPER_ADMIN"]),

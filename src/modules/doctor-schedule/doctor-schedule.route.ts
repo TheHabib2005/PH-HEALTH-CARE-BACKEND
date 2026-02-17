@@ -6,16 +6,16 @@ import { doctorScheduleSchemas } from "./doctor-schedule.schema";
 
 const router = express.Router();
 
-router.post("/",
+router.post("/create-my-doctor-schedule",
     authMiddleware,
-    roleMiddleware(["DOCTOR", "ADMIN", "SUPER_ADMIN"]),
+    roleMiddleware(["DOCTOR"]),
     validateRequest(doctorScheduleSchemas.createDoctorScheduleZodSchema),
     doctorScheduleControllers.createDoctorSchedule
 );
 
-router.get("/",
+router.get("/all-doctor-schedules",
     authMiddleware,
-    roleMiddleware(["ADMIN", "SUPER_ADMIN"]),
+       roleMiddleware(["ADMIN","SUPER_ADMIN"]),
     doctorScheduleControllers.getAllDoctorSchedules
 );
 
@@ -26,7 +26,7 @@ router.get("/:doctorId",
 
 router.delete("/:doctorId/:scheduleId",
     authMiddleware,
-    roleMiddleware(["DOCTOR", "ADMIN", "SUPER_ADMIN"]),
+    roleMiddleware(["DOCTOR"]),
     doctorScheduleControllers.deleteDoctorSchedule
 );
 

@@ -39,7 +39,7 @@ export interface IQueryParams {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
     fields?: string;
-    includes?: string;
+    includes?:{} | any;
     [key: string] : string | undefined;
 }
 
@@ -91,8 +91,3 @@ export interface IQueryResult<T>{
     }
 }
 
-prisma.doctor.findMany({
-    include:{
-        appoinments:true
-    }
-})

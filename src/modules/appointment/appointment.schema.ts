@@ -4,8 +4,7 @@ const createAppointmentZodSchema = z.object({
     body: z.object({
         doctorId: z.string({ required_error: "Doctor ID is required" }),
         patientId: z.string({ required_error: "Patient ID is required" }),
-        scheduleId: z.string({ required_error: "Schedule ID is required" }),
-        videoCallingId: z.string({ required_error: "Video calling ID is required" }),
+        scheduleId: z.string({ required_error: "Schedule ID is required" })
     })
 });
 

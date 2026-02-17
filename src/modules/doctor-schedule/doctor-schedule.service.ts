@@ -2,21 +2,38 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/AppError";
 import { ICreateDoctorSchedulePayload } from "./doctor-schedule.interface";
+import { IQueryParams } from "../../types/queryBuilder.types";
+import { QueryBuilder } from "../../utils/queryBuilder";
+import { IRequestUser } from "../auth/auth.interface";
 
 // CREATE DOCTOR SCHEDULE (assign multiple schedules to a doctor)
-const createDoctorSchedule = async (payload: ICreateDoctorSchedulePayload) => {
-    const { doctorId, scheduleIds } = payload;
-
+const createDoctorSchedule = async (user:IRequestUser,payload:ICreateDoctorSchedulePayload) => {
+ 
+const {scheduleIds} = payload
     const doctor = await prisma.doctor.findUnique({
-        where: { id: doctorId, isDeleted: false },
+        where: { email: user.email, isDeleted: false },
     });
 
     if (!doctor) {
         throw new AppError("Doctor not found", status.NOT_FOUND);
     }
 
+  const existingSchedules = await prisma.schedule.findMany({
+        where: {
+            id: { in: scheduleIds }
+        }
+    });
+
+    // Check if any ID from payload is missing in the database
+    if (existingSchedules.length !== scheduleIds.length) {
+        const existingIds = existingSchedules.map(s => s.id);
+        const invalidIds = scheduleIds.filter(id => !existingIds.includes(id));
+        
+        throw new AppError(`Invalid schedule IDs: ${invalidIds.join(", ")}`, status.BAD_REQUEST);
+    }
+
     const doctorScheduleData = scheduleIds.map((scheduleId) => ({
-        doctorId,
+        doctorId:doctor.id,
         scheduleId,
         isBooked: false,
     }));
@@ -43,6 +60,7 @@ const getDoctorSchedules = async (doctorId: string) => {
         where: { doctorId },
         include: {
             schedule: true,
+            doctor:true
         },
         orderBy: { schedule: { startDate: "asc" } },
     });
@@ -51,16 +69,18 @@ const getDoctorSchedules = async (doctorId: string) => {
 };
 
 // GET ALL DOCTOR SCHEDULES (admin view)
-const getAllDoctorSchedules = async () => {
-    const doctorSchedules = await prisma.doctorSchedules.findMany({
-        include: {
-            doctor: true,
-            schedule: true,
-        },
-        orderBy: { createdAt: "desc" },
-    });
+const getAllDoctorSchedules = async (queryParams:IQueryParams) => {
+   
 
-    return doctorSchedules;
+    const doctorSchedulesQuery = new QueryBuilder(prisma.doctorSchedules,queryParams)
+    .include({
+        doctor:true,
+        schedule:true
+    })
+    .paginate()
+    .sort()
+
+    return doctorSchedulesQuery.execute();
 };
 
 // DELETE DOCTOR SCHEDULE

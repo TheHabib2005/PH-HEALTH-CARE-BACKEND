@@ -3,10 +3,11 @@ import status from "http-status";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { sendSuccess } from "../../utils/apiResponse";
 import { doctorScheduleServices } from "./doctor-schedule.service";
+import { IQueryParams } from "../../types/queryBuilder.types";
 
 // -------------------- CREATE DOCTOR SCHEDULE --------------------
 const createDoctorSchedule = asyncHandler(async (req: Request, res: Response) => {
-    const result = await doctorScheduleServices.createDoctorSchedule(req.body);
+    const result = await doctorScheduleServices.createDoctorSchedule(res.locals.auth, req.body);
 
     return sendSuccess(res, {
         statusCode: status.CREATED,
@@ -30,8 +31,7 @@ const getDoctorSchedules = asyncHandler(async (req: Request, res: Response) => {
 
 // -------------------- GET ALL DOCTOR SCHEDULES --------------------
 const getAllDoctorSchedules = asyncHandler(async (req: Request, res: Response) => {
-    const result = await doctorScheduleServices.getAllDoctorSchedules();
-
+    const result = await doctorScheduleServices.getAllDoctorSchedules(req.query as IQueryParams);
     return sendSuccess(res, {
         statusCode: status.OK,
         message: "All doctor schedules fetched successfully",

@@ -8,6 +8,7 @@ declare global {
     user:User
       auth: {
         userId: string;
+        email: string;
         role: UserRole
       }
     }

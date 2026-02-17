@@ -9,7 +9,7 @@
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "vitest",
-    "stripe:webhook": "stripe listen --forward-to localhost:5000/webhook",
+    "stripe:webhook": "stripe listen --forward-to localhost:5000/api/v1/stripe/webhook",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage"
   },

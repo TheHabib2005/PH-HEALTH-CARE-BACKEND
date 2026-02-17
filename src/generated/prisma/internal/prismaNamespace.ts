@@ -1887,7 +1887,8 @@ export type PatientHealthDataScalarFieldEnum = (typeof PatientHealthDataScalarFi
 
 export const PaymentScalarFieldEnum = {
   id: 'id',
-  appoitnmentId: 'appoitnmentId',
+  appointmentId: 'appointmentId',
+  stripeEventId: 'stripeEventId',
   amount: 'amount',
   transactionId: 'transactionId',
   status: 'status',

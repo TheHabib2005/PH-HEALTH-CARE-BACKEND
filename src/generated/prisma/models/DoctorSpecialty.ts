@@ -210,7 +210,7 @@ export type DoctorSpecialtyScalarWhereWithAggregatesInput = {
 
 export type DoctorSpecialtyCreateInput = {
   id?: string
-  doctor: Prisma.DoctorCreateNestedOneWithoutSpecialtyInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutSpecialtysInput
   specialty: Prisma.SpecialtyCreateNestedOneWithoutDoctorSpecialtiesInput
 }
 
@@ -222,7 +222,7 @@ export type DoctorSpecialtyUncheckedCreateInput = {
 
 export type DoctorSpecialtyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutSpecialtyNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutSpecialtysNestedInput
   specialty?: Prisma.SpecialtyUpdateOneRequiredWithoutDoctorSpecialtiesNestedInput
 }
 
@@ -412,7 +412,7 @@ export type DoctorSpecialtyScalarWhereInput = {
 
 export type DoctorSpecialtyCreateWithoutSpecialtyInput = {
   id?: string
-  doctor: Prisma.DoctorCreateNestedOneWithoutSpecialtyInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutSpecialtysInput
 }
 
 export type DoctorSpecialtyUncheckedCreateWithoutSpecialtyInput = {
@@ -473,7 +473,7 @@ export type DoctorSpecialtyCreateManySpecialtyInput = {
 
 export type DoctorSpecialtyUpdateWithoutSpecialtyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutSpecialtyNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutSpecialtysNestedInput
 }
 
 export type DoctorSpecialtyUncheckedUpdateWithoutSpecialtyInput = {

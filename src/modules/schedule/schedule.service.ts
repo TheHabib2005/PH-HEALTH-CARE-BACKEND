@@ -2,11 +2,12 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/AppError";
 import { ICreateSchedulePayload, IScheduleFilterRequest } from "./schedule.interface";
+import { IQueryParams } from "../../types/queryBuilder.types";
+import { QueryBuilder } from "../../utils/queryBuilder";
 
-// CREATE SCHEDULE
+// CREATE SCHEDULE ✔
 const createSchedule = async (payload: ICreateSchedulePayload) => {
     const { startDate, endDate, startTime, endTime } = payload;
-
     const schedule = await prisma.schedule.create({
         data: {
             startDate: new Date(startDate),
@@ -15,29 +16,17 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
             endTime,
         },
     });
-
     return schedule;
 };
 
-// GET ALL SCHEDULES
-const getAllSchedules = async (filters: IScheduleFilterRequest) => {
-    const where: Record<string, unknown> = {};
-
-    if (filters.startDate && filters.endDate) {
-        where.startDate = {
-            gte: new Date(filters.startDate),
-        };
-        where.endDate = {
-            lte: new Date(filters.endDate),
-        };
-    }
-
-    const schedules = await prisma.schedule.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-    });
-
-    return schedules;
+// GET ALL SCHEDULES  // quertString = /url?startdate=value&endDate=value
+const getAllSchedules = async (queryString: IQueryParams) => {
+ 
+    // adding QueryBuilder 
+    const dbQuery = new QueryBuilder(prisma.schedule,queryString)
+    .paginate()
+    .sort();
+    return dbQuery.execute();
 };
 
 // GET SCHEDULE BY ID
@@ -53,11 +42,9 @@ const getScheduleById = async (id: string) => {
             appointment: true,
         },
     });
-
     if (!schedule) {
         throw new AppError("Schedule not found", status.NOT_FOUND);
     }
-
     return schedule;
 };
 

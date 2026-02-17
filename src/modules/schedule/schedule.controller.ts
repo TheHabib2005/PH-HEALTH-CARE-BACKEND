@@ -23,7 +23,6 @@ const getAllSchedules = asyncHandler(async (req: Request, res: Response) => {
     };
 
     const result = await scheduleServices.getAllSchedules(filters);
-
     return sendSuccess(res, {
         statusCode: status.OK,
         message: "Schedules fetched successfully",
