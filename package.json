@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "vitest",
+    "stripe:webhook": "stripe listen --forward-to localhost:5000/webhook",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage"
   },
@@ -47,11 +48,13 @@
     "@scalar/express-api-reference": "^0.8.30",
     "@tiptap/starter-kit": "^3.15.3",
     "@types/bcrypt": "^6.0.0",
+    "@types/body-parser": "^1.19.6",
     "@types/date-fns": "^2.6.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@upstash/redis": "^1.36.2",
     "bcrypt": "^6.0.0",
     "better-auth": "^1.4.9",
+    "body-parser": "^2.2.2",
     "bullmq": "^5.67.3",
     "cloudinary": "^1.41.3",
     "compression": "^1.8.1",
@@ -74,6 +77,7 @@
     "pino": "^9.14.0",
     "pino-http": "^10.5.0",
     "redis": "^5.10.0",
+    "stripe": "^20.3.1",
     "ua-parser-js": "^2.0.9",
     "zod": "^3.25.56"
   }

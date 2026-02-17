@@ -30,6 +30,9 @@ const envSchema = z.object({
   REDIS_USERNAME: z.string().default('default'),
   REDIS_PASSWORD: z.string(),
 
+  STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
+
   GMAIL_APP_PASSWORD: z.string(),
   FORM_EMAIL: z.string().email(),
 });

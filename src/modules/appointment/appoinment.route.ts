@@ -1,6 +1,8 @@
 import express from "express";
 import { AppointmentController } from "./appoinment.controller";
 import { authMiddleware, roleMiddleware } from "../../middleware/auth-middlewares";
+import { validateRequest } from "../../middleware/validateRequest";
+import { appointmentSchemas } from "./appointment.schema";
 
 const router = express.Router();
 
@@ -15,6 +17,7 @@ router.get("/:id",
 router.post("/",
     authMiddleware,
     roleMiddleware(["PATIENT"]),
+    validateRequest(appointmentSchemas.createAppointmentZodSchema),
     AppointmentController.createAppointment);
 router.patch("/:id/cancel",
     authMiddleware,

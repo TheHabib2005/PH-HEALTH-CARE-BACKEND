@@ -6,12 +6,17 @@ import adminRouter from "../modules/admin/admin.route"
 import superAdmin from "../modules/super-admin/super-admin.route"
 import usersRouter from "../modules/users/user.route"
 import appointmentRouter from "../modules/appointment/appoinment.route"
+import scheduleRouter from "../modules/schedule/schedule.route"
+import doctorScheduleRouter from "../modules/doctor-schedule/doctor-schedule.route"
+
 const indexRouter = Router();
 indexRouter.use("/auth",authRouter)
 indexRouter.use("/super-admins",superAdmin)
 indexRouter.use("/admins",adminRouter)
 indexRouter.use("/doctors",doctorsRouter)
 indexRouter.use("/specialties",specialityRouter)
+indexRouter.use("/schedules",scheduleRouter)
+indexRouter.use("/doctor-schedules",doctorScheduleRouter)
 indexRouter.use("/appointments",appointmentRouter)
 indexRouter.use("/users",usersRouter)
 

@@ -5,12 +5,19 @@ enum PaymentStatus {
 
 model Payment {
     id                 String        @id @default(uuid())
-    appoitnmentId      String        @unique
+    appointmentId      String        @unique
+        stripeEventId       String?         @unique
     amount             Float
     transactionId      String
     status             PaymentStatus
     paymentGatewayData Json?
     createdAt          DateTime      @default(now())
     updatedAt          DateTime      @updatedAt
-    appoitnment        Appointment    @relation(fields: [appoitnmentId], references: [id], onDelete: Cascade)
+    appoitnment        Appointment    @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+      @@index([appointmentId])
+    @@index([transactionId])
+    @@map("payments")
 }
+
+
+
