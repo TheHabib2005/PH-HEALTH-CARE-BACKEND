@@ -5,6 +5,7 @@ import doctorsRouter from "../modules/doctor/doctor.route"
 import adminRouter from "../modules/admin/admin.route"
 import superAdmin from "../modules/super-admin/super-admin.route"
 import usersRouter from "../modules/users/user.route"
+import reviewsRouter from "../modules/review/review.route"
 import mediaRouter from "../modules/media/media.route"
 import patientRouter from "../modules/patient/patient.route"
 import appointmentRouter from "../modules/appointment/appoinment.route"
@@ -23,5 +24,6 @@ indexRouter.use("/appointments",appointmentRouter)
 indexRouter.use("/patients",patientRouter)
 indexRouter.use("/media",mediaRouter)
 indexRouter.use("/users",usersRouter)
+indexRouter.use("/reviews",reviewsRouter)
 
 export default indexRouter
