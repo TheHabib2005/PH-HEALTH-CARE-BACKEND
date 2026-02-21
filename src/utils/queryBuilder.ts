@@ -102,7 +102,7 @@ export class QueryBuilder<T> {
         total,
         totalPage: Math.ceil(total / limit),
       },
-      ...data,
+      data:data
     };
   }
 

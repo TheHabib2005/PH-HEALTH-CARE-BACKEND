@@ -2,11 +2,13 @@ import path from "path";
 import { startServer } from "./app";
 import { connectToDatabase } from "./config/db";
 import "./workers/emailWorker"; 
+import { configureCloudinary } from "./config/cloudinary.config";
 
 (async () => {
  
   
   await connectToDatabase();
+  await configureCloudinary()
   await startServer();
   // await auth.api.signUpEmail({
   //   body:{

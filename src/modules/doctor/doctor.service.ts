@@ -22,7 +22,7 @@ const getDoctorById = async (id: string) => {
       isDeleted: false,
     },
     include: {
-      specialty: {
+      specialtys: {
         include: {
           specialty: {
             select: {
@@ -34,7 +34,28 @@ const getDoctorById = async (id: string) => {
         },
       },
       reviews: true,
-      schedule: true,
+      schedule:{
+        select:{
+          schedule:{
+            select:{
+              doctorsSchedule:{
+                select:{
+                  isBooked:true,
+                  schedule:{
+                    select:{
+                      startDate:true,
+                      startTime:true,
+                      endDate:true,
+                      endTime:true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+     
     },
   });
 
@@ -44,7 +65,7 @@ const getDoctorById = async (id: string) => {
 
   const formattedDoctor = {
     ...doctor,
-    doctorSpecialties: doctor.specialty.map((item) => ({
+    doctorSpecialties: doctor.specialtys.map((item) => ({
       id: item.specialty.id,
       title: item.specialty.title,
       icon: item.specialty.icon,
@@ -54,6 +75,7 @@ const getDoctorById = async (id: string) => {
   delete (formattedDoctor as any).specialty;
 
   await redis.set(cacheKey, JSON.stringify(formattedDoctor), "EX", 300);
+  // console.log(formattedDoctor);
 
   return formattedDoctor;
 };
@@ -158,16 +180,40 @@ const getDoctorById = async (id: string) => {
 // };
 
 
-const getAllDoctors = async (queryParams:IQueryParams) => {
+
+
+const getAllDoctors = async (queryParams: IQueryParams) => {
   console.log(queryParams);
-  
-const doctorQuery = new QueryBuilder(prisma.doctor, queryParams)
+
+  const doctorQuery = new QueryBuilder(prisma.doctor, queryParams)
     .search(['name', 'email', 'contactNumber']) // শুধু এই ফিল্ডে সার্চ হবে
     .filter(['gender', 'appointmentFee', 'designation']) // শুধু এই ফিল্ডে ফিল্টার হবে
     .sort()
+    .include({
+      specialtys: {
+        include: {
+          specialty: true
+        }
+      },
+      // Basic user info like status and role
+      user: {
+        select: {
+          status: true,
+          emailVerified: true
+        }
+      }
+    })
     .paginate();
-    const result = await doctorQuery.execute();
-    return result.data
+  doctorQuery.query.where = {
+    isDeleted: false
+  }
+
+
+  const result = await doctorQuery.execute();
+  console.log(result);
+
+
+  return result
 };
 
 

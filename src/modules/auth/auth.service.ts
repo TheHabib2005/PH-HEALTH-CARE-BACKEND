@@ -139,10 +139,15 @@ const getUserProfile = async (user: IRequestUser) => {
   const cacheKey = `profile:${user.userId}`;
 
   const cached = await redis.get(cacheKey);
-  if (cached) return JSON.parse(cached);
+  // if (cached) return JSON.parse(cached);
 
   const baseUser = await prisma.user.findUnique({
     where: { id: user.userId },
+    include:{
+      patient:true,
+      doctor:true,
+      admin:true
+    }
   });
 
   if (!baseUser)
@@ -154,6 +159,9 @@ const getUserProfile = async (user: IRequestUser) => {
     "EX",
     PROFILE_CACHE_EXPIRE
   );
+
+  console.log(baseUser);
+  
 
   return baseUser;
 };

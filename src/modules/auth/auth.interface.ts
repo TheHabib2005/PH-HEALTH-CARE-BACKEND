@@ -18,6 +18,10 @@ export interface IRequestUser{
   email: string;
 
 }
+export interface IUpdateUser{
+  name?:string;
+  image?:string;
+}
 export interface IChangePassword{
   sessionToken:string;
   currentPassword:string;
