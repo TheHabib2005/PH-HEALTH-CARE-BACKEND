@@ -4,7 +4,7 @@ export interface IInvoicePayload {
     invoiceNumber: string;
     doctorName: string;
     patientName: string;
-    paymentTime: number;
+    paymentTime: string;
     paymentMethod: any;
     appointmentFee: number;
     quantity: number;

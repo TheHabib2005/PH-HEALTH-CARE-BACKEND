@@ -101,7 +101,11 @@ const handleStripeWebHookEventController = asyncHandler(async (req, res) => {
         doctorName: appointment.doctor.name,
         patientName: appointment.patient.name,
         patientEmail: appointment.patient.email,
-        paymentTime: Date.now(),
+        paymentTime: new Date().toLocaleString('en-US', {
+  day: '2-digit',
+  month: '2-digit',
+  year: '2-digit'
+}),
         paymentMethod: "card",
         appointmentFee: appointment.payment?.amount as number,
         quantity: 1,
