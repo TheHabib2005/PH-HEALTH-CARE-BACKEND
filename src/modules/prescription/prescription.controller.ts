@@ -33,6 +33,8 @@ const getMyPrescriptionController = asyncHandler(async (req: Request, res: Respo
   });
 });
 
+
+
 const updatePrescriptionController = asyncHandler(async (req: Request, res: Response) => {
   const user = res.locals.auth;
   const { id } = req.params;

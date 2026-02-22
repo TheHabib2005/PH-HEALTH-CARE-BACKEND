@@ -17,9 +17,6 @@ const emailWorker = new Worker(
           prescriptionData
         );
 
-        console.log(htmlContent);
-        
-
         await mailServices.sendMail({
           email: prescriptionData.patientEmail,
           name: prescriptionData.patientName,

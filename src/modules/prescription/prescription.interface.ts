@@ -13,3 +13,17 @@ export interface ICreatePrescriptionPayload {
       instructions: string;
             followUpDate: Date;
 }
+export interface IUpdatePrescriptionPayload {
+    appointmentId:string;
+      instructions: string;
+            followUpDate: Date;
+}
+
+
+export interface IUploadPdfOptions {
+    folder:string;
+    resource_type: "image" | "video" | "raw" | "auto" | any;
+    public_id:string;
+}
+
+

@@ -1,7 +1,7 @@
 import status from 'http-status';
 import PDFDocument from 'pdfkit';
 import { cloudinaryInstance } from '../../config/cloudinary.config';
-import { IUploadPdfFailedResult, IUploadPdfSuccessResult } from './prescription.interface';
+import { IUploadPdfFailedResult, IUploadPdfOptions, IUploadPdfSuccessResult } from './prescription.interface';
 
 export const generatePrescriptionBuffer = (data: any): Promise<Buffer> => {
     return new Promise((resolve, reject) => {
@@ -120,20 +120,19 @@ import httpStatus from 'http-status'; // Assuming you use a library like this fo
 
 
 export const uploadPdfBufferToCloudinary = (
-    pdfBuffer: Buffer, 
-    prescriptionId: string
+    pdfBuffer: Buffer,
+    type:string,
+    options:IUploadPdfOptions
 ): Promise<IUploadPdfSuccessResult> => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinaryInstance.uploader.upload_stream(
             { 
-                folder: 'ph-health-care/images/prescriptions', 
-                resource_type: 'raw', 
-                public_id: `prescription_${prescriptionId}` 
+               ...options
             },
             (error: UploadApiErrorResponse | undefined, cloudinaryResult: UploadApiResponse | undefined) => {
                 if (error) {
                     const errorResult: IUploadPdfFailedResult = {
-                        message: error.message || "failed to upload prescription pdf buffer in cloudinary",
+                        message: error.message || `failed to upload ${type} pdf buffer in cloudinary`,
                         statusCode: httpStatus.BAD_REQUEST
                     };
                     return reject(errorResult);

@@ -5,7 +5,7 @@ import { AppError } from "../../utils/AppError";
 import { IRequestUser } from "../auth/auth.interface";
 import { generatePrescriptionBuffer, uploadPdfBufferToCloudinary } from "./prescription.utils";
 import { emailQueue } from "../../queue/emailQueue";
-import { ICreatePrescriptionPayload } from "./prescription.interface";
+import { ICreatePrescriptionPayload, IUpdatePrescriptionPayload } from "./prescription.interface";
 
 const doctorGivePrescription = async (user: IRequestUser, payload: ICreatePrescriptionPayload) => {
     // 1. Check if Doctor exists
@@ -17,19 +17,19 @@ const doctorGivePrescription = async (user: IRequestUser, payload: ICreatePrescr
     // 2. Check if appointment exists and belongs to this doctor
     const appointment = await prisma.appointment.findUniqueOrThrow({
         where: { id: payload.appointmentId },
-        include: { patient: true, doctor: true,  },
+        include: { patient: true, doctor: true, },
 
     });
 
     // check prescription already have on this appoinetment so we shoud update now
 
     const isPresciptionExist = await prisma.prescription.findUnique({
-        where:{
-            appointmentId:appointment.id
+        where: {
+            appointmentId: appointment.id
         }
     })
 
-    if(isPresciptionExist){
+    if (isPresciptionExist) {
         throw new AppError("prescription already have on this appoinetment so you should update now", status.BAD_REQUEST);
 
     }
@@ -39,25 +39,30 @@ const doctorGivePrescription = async (user: IRequestUser, payload: ICreatePrescr
     }
 
     const samplePrescriptionData = {
-    doctor: {
-        name: appointment.doctor.name,
-        specialization: doctorData.designation,
-    },
-    patient: {
-        name: appointment.patient.name,
-    },
-    // Instructions সেকশনে ঔষধের নাম এবং নিয়মগুলো সুন্দর করে সাজিয়ে দেওয়া হয়েছে
-    instructions: payload.instructions,
-    
-    followUpDate: payload.followUpDate // ISO Format অথবা Date Object
-};
+        doctor: {
+            name: appointment.doctor.name,
+            specialization: doctorData.designation,
+        },
+        patient: {
+            name: appointment.patient.name,
+        },
+        // Instructions সেকশনে ঔষধের নাম এবং নিয়মগুলো সুন্দর করে সাজিয়ে দেওয়া হয়েছে
+        instructions: payload.instructions,
 
-       const generatePdfBuffer = await generatePrescriptionBuffer(samplePrescriptionData);
+        followUpDate: payload.followUpDate // ISO Format অথবা Date Object
+    };
 
-    const { secure_url } = await uploadPdfBufferToCloudinary(generatePdfBuffer, appointment.id);
-  if (!secure_url) {
+    const generatePdfBuffer = await generatePrescriptionBuffer(samplePrescriptionData);
+
+    const cloudInaryConfig = {
+    folder: 'ph-health-care/documents/prescriptions', 
+    resource_type: 'raw', 
+    public_id: `prescription_${appointment.id}` 
+    }
+    const { secure_url } =  await uploadPdfBufferToCloudinary(generatePdfBuffer, "prescription",cloudInaryConfig);
+    if (!secure_url) {
         throw new AppError("failed to upload prescription pdf buffer in cloudinary", status.BAD_REQUEST)
-    
+
     }
 
     // 3. Create prescription
@@ -68,7 +73,7 @@ const doctorGivePrescription = async (user: IRequestUser, payload: ICreatePrescr
             doctorId: doctorData.id,
             instructions: payload.instructions,
             followUpDate: payload.followUpDate || new Date(),
-            prescriptionPdfUrl:secure_url
+            prescriptionPdfUrl: secure_url
 
         },
         include: { patient: true, doctor: true, appointment: true },
@@ -76,17 +81,17 @@ const doctorGivePrescription = async (user: IRequestUser, payload: ICreatePrescr
 
 
     const prescriptionData = {
-    patientName: result.patient.name,                      // Full name of the patient
-    patientEmail: result.patient.email,                      // Full name of the patient
-    doctorName: result.doctor.name,                   // Name of the physician (without 'Dr.' prefix as the EJS adds it)
-    date: new Date(result.createdAt).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    }),                    // Format as a string (e.g., .toLocaleDateString())
-    prescriptionDetails: result.instructions, // Short summary of medications/instructions
-    pdfUrl: secure_url     // The 'secure_url' from your Cloudinary upload
-};
+        patientName: result.patient.name,
+        patientEmail: result.patient.email,
+        doctorName: result.doctor.name,
+        date: new Date(result.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }),
+        prescriptionDetails: result.instructions,
+        pdfUrl: secure_url
+    };
 
     await emailQueue.add("prescription-email", prescriptionData)
 
@@ -125,18 +130,88 @@ const myPrescription = async (user: IRequestUser) => {
     }
 };
 
-const updatePrescription = async (user: IRequestUser, id: string, payload: any) => {
-    const doctor = await prisma.doctor.findUniqueOrThrow({ where: { email: user.email } });
-    const prescription = await prisma.prescription.findUniqueOrThrow({ where: { id } });
+const updatePrescription = async (user: IRequestUser, prescriptionId:string,payload: IUpdatePrescriptionPayload) => {
+    // 1. Check if Doctor exists
+    const doctorData = await prisma.doctor.findUniqueOrThrow({
+        where: { email: user.email },
+    });
+    // 1. Check if Doctor exists
+    const prescriptionExist = await prisma.prescription.findUniqueOrThrow({
+        where: { id: prescriptionId },
 
-    if (prescription.doctorId !== doctor.id) {
-        throw new AppError("You can only update your own prescriptions", status.FORBIDDEN);
+    });
+
+    // 2. Check if appointment exists and belongs to this doctor
+    const appointment = await prisma.appointment.findUniqueOrThrow({
+        where: { id: payload.appointmentId },
+        include: { patient: true, doctor: true, },
+
+    });
+
+    if (appointment.doctorId !== doctorData.id) {
+        throw new AppError("This appointment does not belong to you", status.FORBIDDEN);
     }
 
-    return await prisma.prescription.update({
-        where: { id },
-        data: payload,
+    const samplePrescriptionData = {
+        doctor: {
+            name: appointment.doctor.name,
+            specialization: doctorData.designation,
+        },
+        patient: {
+            name: appointment.patient.name,
+        },
+        instructions: payload.instructions,
+
+        followUpDate: payload.followUpDate
+    };
+
+    const generatePdfBuffer = await generatePrescriptionBuffer(samplePrescriptionData);
+
+    const cloudInaryConfig = {
+    folder: 'ph-health-care/documents/prescriptions', 
+    resource_type: 'raw', 
+    public_id: `prescription_${appointment.id}` 
+    }
+
+    const { secure_url:updatedPrescriptionUrl } = await uploadPdfBufferToCloudinary(generatePdfBuffer, "prescription",cloudInaryConfig);
+    if (!updatedPrescriptionUrl) {
+        throw new AppError("failed to upload prescription pdf buffer in cloudinary", status.BAD_REQUEST)
+    }
+
+    // 3. Create prescription
+    const result = await prisma.prescription.update({
+        where:{
+            id:prescriptionId
+        },
+        data: {
+            appointmentId: payload.appointmentId || prescriptionExist.appointmentId,
+            patientId: appointment.patientId|| prescriptionExist.patientId,
+            doctorId: doctorData.id || prescriptionExist.doctorId,
+            instructions: payload.instructions || prescriptionExist.instructions,
+            followUpDate: payload.followUpDate || prescriptionExist.followUpDate,
+            prescriptionPdfUrl: updatedPrescriptionUrl  || prescriptionExist.prescriptionPdfUrl,
+
+        },
+        include: { patient: true, doctor: true, appointment: true },
     });
+
+
+    const prescriptionData = {
+        patientName: result.patient.name,
+        patientEmail: result.patient.email,
+        doctorName: result.doctor.name,
+        date: new Date(result.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }),
+        prescriptionDetails: result.instructions,
+        pdfUrl: result.prescriptionPdfUrl
+    };
+
+    await emailQueue.add("prescription-email", prescriptionData)
+
+    return result;
 };
 
 const deletePrescription = async (user: IRequestUser, id: string) => {
