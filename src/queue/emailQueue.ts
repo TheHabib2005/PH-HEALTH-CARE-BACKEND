@@ -7,5 +7,7 @@ export const emailQueue = new Queue("emailQueue", {
 
 // ✅ Job waiting in queue
 emailQueue.on("waiting", (jobId) => {
+  console.log(emailQueue.getJobs());
+
   console.log(`🕒 Job ${jobId} is waiting in the queue`);
 });

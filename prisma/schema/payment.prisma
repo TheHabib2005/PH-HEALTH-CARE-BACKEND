@@ -1,23 +1,22 @@
 enum PaymentStatus {
-    PENDING
-    COMPLETE
+  PENDING
+  COMPLETE
 }
 
 model Payment {
-    id                 String        @id @default(uuid())
-    appointmentId      String        @unique
-    stripeEventId       String?         @unique
-    amount             Float
-    transactionId      String
-    status             PaymentStatus
-    paymentGatewayData Json?
-    createdAt          DateTime      @default(now())
-    updatedAt          DateTime      @updatedAt
-    appoitnment        Appointment    @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-      @@index([appointmentId])
-    @@index([transactionId])
-    @@map("payments")
+  id                 String        @id @default(uuid())
+  appointmentId      String        @unique
+  stripeEventId      String?       @unique
+  invoiceUrl         String?
+  amount             Float
+  transactionId      String
+  status             PaymentStatus
+  paymentGatewayData Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  appoitnment        Appointment   @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  @@index([appointmentId])
+  @@index([transactionId])
+  @@map("payments")
 }
-
-
-

@@ -3,9 +3,10 @@ import { UserRole } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/AppError";
 import { IRequestUser } from "../auth/auth.interface";
-import { generatePrescriptionBuffer, uploadPdfBufferToCloudinary } from "./prescription.utils";
+import { generatePrescriptionBuffer } from "./prescription.utils";
 import { emailQueue } from "../../queue/emailQueue";
 import { ICreatePrescriptionPayload, IUpdatePrescriptionPayload } from "./prescription.interface";
+import { uploadPdfBufferToCloudinary } from "../media/media.service";
 
 const doctorGivePrescription = async (user: IRequestUser, payload: ICreatePrescriptionPayload) => {
     // 1. Check if Doctor exists

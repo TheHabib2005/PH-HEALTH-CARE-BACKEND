@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Update - PH Health Care</title>
+    <style>
+        body { font-family: 'Inter', -apple-system, sans-serif; background-color: #f8fafc; margin: 0; padding: 0; }
+        .wrapper { padding: 20px; }
+        .container { 
+            max-width: 600px; margin: 0 auto; background: #ffffff; 
+            border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
+        .header { padding: 30px; text-align: center; color: #ffffff; }
+        .status-badge {
+            display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 12px;
+            font-weight: bold; text-transform: uppercase; margin-bottom: 10px; color: #ffffff;
+        }
+        .content { padding: 40px 30px; }
+        
+        /* Message Box Base Styling */
+        .message-box {
+            padding: 20px; border-radius: 8px; margin-bottom: 30px; 
+            font-size: 15px; text-align: center; border: 1px solid;
+            line-height: 1.5;
+        }
+        
+        .details-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .details-table td { padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .label { color: #64748b; font-weight: 500; }
+        .value { color: #1e293b; font-weight: 600; text-align: right; }
+        .btn-container { text-align: center; margin-top: 20px; }
+        .button { 
+            color: #ffffff !important; padding: 14px 28px; text-decoration: none; 
+            border-radius: 8px; font-weight: 600; display: inline-block; 
+        }
+        .footer { text-align: center; padding: 25px; font-size: 12px; color: #94a3b8; }
+        
+        /* Helper Classes */
+        .bg-success { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .bg-failed { background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%); }
+        .badge-success { background-color: #059669; }
+        .badge-failed { background-color: #ef4444; }
+
+        /* New Message Box Specific Helpers */
+        .msg-success { background-color: #ecfdf5; color: #065f46; border-color: #d1fae5; }
+        .msg-failed { background-color: #fff1f2; color: #9f1239; border-color: #ffe4e6; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header <%= status === 'COMPLETE' ? 'bg-success' : 'bg-failed' %>">
+                <div class="status-badge <%= status === 'COMPLETE' ? 'badge-success' : 'badge-failed' %>">
+                    <%= status === 'COMPLETE' ? 'Payment Successful' : 'Payment Action Required' %>
+                </div>
+                <h1 style="margin: 0; font-size: 24px;">PH Health Care</h1>
+            </div>
+
+            <div class="content">
+                <div class="message-box <%= status === 'COMPLETE' ? 'msg-success' : 'msg-failed' %>">
+                    <%= message %>
+                </div>
+
+                <table class="details-table">
+                    <tr>
+                        <td class="label">Patient Name</td>
+                        <td class="value"><%= patientName %></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Consulting Doctor</td>
+                        <td class="value">Dr. <%= doctorName %></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Invoice Number</td>
+                        <td class="value">#<%= (invoiceNumber || '').split('-')[0].toUpperCase() %></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Payment Method</td>
+                        <td class="value" style="text-transform: capitalize;"><%= paymentMethod %></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Total Amount</td>
+                        <td class="value" style="font-size: 18px; color: #0f172a;">
+                            $<%= typeof totalAmount === 'number' ? totalAmount.toFixed(2) : '0.00' %>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="btn-container">
+                    <% if (status === 'COMPLETE') { %>
+                        <a href="<%= invoiceUrl %>" class="button" style="background-color: #2563eb;">Download Invoice PDF</a>
+                    <% } else { %>
+                        <a href="https://your-app.com/retry-payment" class="button" style="background-color: #475569;">Try Payment Again</a>
+                    <% } %>
+                </div>
+            </div>
+            <div class="footer">
+                &copy; 2026 PH Health Care. All rights reserved.<br>
+                123 Health St, Dhaka, Bangladesh.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

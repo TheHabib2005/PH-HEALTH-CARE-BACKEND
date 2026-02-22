@@ -6,8 +6,15 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { prisma } from "../../lib/prisma";
 import { PaymentStatus } from "../../generated/prisma/enums";
 import { AppError } from "../../utils/AppError";
+import { generatePaymentInvoiceBuffer } from "../payment/payment.utils";
+import { v7 as uuidv7 } from "uuid";
+import { uploadPdfBufferToCloudinary } from "../media/media.service";
+import status from "http-status";
+import { emailQueue } from "../../queue/emailQueue";
 
 const handleStripeWebHookEventController = asyncHandler(async (req, res) => {
+  console.log("receive wehhook...");
+  
   const endpointSecret = envConfig.STRIPE_WEBHOOK_SECRET;
   let event: any;
   if (endpointSecret) {
@@ -56,7 +63,8 @@ const handleStripeWebHookEventController = asyncHandler(async (req, res) => {
       const appointment = await prisma.appointment.findUnique({
         where: {
           id: appointmentId
-        }
+        },
+        include: { doctor: true, patient: true, payment: true }
       })
 
       if (!appointment) {
@@ -85,7 +93,45 @@ const handleStripeWebHookEventController = asyncHandler(async (req, res) => {
           }
         });
       });
+      // send mail if payment success 
 
+      const invoicePdfPayload = {
+        status: session.payment_status === "paid" ? PaymentStatus.COMPLETE : PaymentStatus.PENDING,
+        invoiceNumber: uuidv7(),
+        doctorName: appointment.doctor.name,
+        patientName: appointment.patient.name,
+        patientEmail: appointment.patient.email,
+        paymentTime: Date.now(),
+        paymentMethod: "card",
+        appointmentFee: appointment.payment?.amount as number,
+        quantity: 1,
+        totalAmount: appointment.payment?.amount! * 1,
+        message: session.payment_status === "paid" ? "✔ Payment Successful! Your appointment has been confirmed. A confirmation SMS has been sent." : "✘ Payment Failed! Insufficient balance or transaction declined by bank. Please try again."
+      }
+
+      const invoicePdfBuffer = await generatePaymentInvoiceBuffer(invoicePdfPayload);
+
+      const cloudInaryConfig = {
+        folder: 'ph-health-care/documents/invoices',
+        resource_type: 'raw',
+        public_id: `prescription_${appointment.payment?.id}`
+      }
+
+      const { secure_url } = await uploadPdfBufferToCloudinary(invoicePdfBuffer, "Invoice", cloudInaryConfig)
+      if (!secure_url) {
+        throw new AppError("failed to upload prescription pdf buffer in cloudinary", status.BAD_REQUEST)
+
+      }
+
+
+      await prisma.payment.update({
+        where: {
+          id: appointment.payment?.id!
+        }, data: {
+          invoiceUrl: secure_url
+        }
+      })
+      await emailQueue.add("payment-succces", {...invoicePdfPayload,invoiceUrl:secure_url})
       console.log(`Processed checkout.session.completed for appointment ${appointmentId} and payment ${paymentId}`);
       break;
     }

@@ -38,6 +38,7 @@ export type PaymentMinAggregateOutputType = {
   id: string | null
   appointmentId: string | null
   stripeEventId: string | null
+  invoiceUrl: string | null
   amount: number | null
   transactionId: string | null
   status: $Enums.PaymentStatus | null
@@ -49,6 +50,7 @@ export type PaymentMaxAggregateOutputType = {
   id: string | null
   appointmentId: string | null
   stripeEventId: string | null
+  invoiceUrl: string | null
   amount: number | null
   transactionId: string | null
   status: $Enums.PaymentStatus | null
@@ -60,6 +62,7 @@ export type PaymentCountAggregateOutputType = {
   id: number
   appointmentId: number
   stripeEventId: number
+  invoiceUrl: number
   amount: number
   transactionId: number
   status: number
@@ -82,6 +85,7 @@ export type PaymentMinAggregateInputType = {
   id?: true
   appointmentId?: true
   stripeEventId?: true
+  invoiceUrl?: true
   amount?: true
   transactionId?: true
   status?: true
@@ -93,6 +97,7 @@ export type PaymentMaxAggregateInputType = {
   id?: true
   appointmentId?: true
   stripeEventId?: true
+  invoiceUrl?: true
   amount?: true
   transactionId?: true
   status?: true
@@ -104,6 +109,7 @@ export type PaymentCountAggregateInputType = {
   id?: true
   appointmentId?: true
   stripeEventId?: true
+  invoiceUrl?: true
   amount?: true
   transactionId?: true
   status?: true
@@ -203,6 +209,7 @@ export type PaymentGroupByOutputType = {
   id: string
   appointmentId: string
   stripeEventId: string | null
+  invoiceUrl: string | null
   amount: number
   transactionId: string
   status: $Enums.PaymentStatus
@@ -238,6 +245,7 @@ export type PaymentWhereInput = {
   id?: Prisma.StringFilter<"Payment"> | string
   appointmentId?: Prisma.StringFilter<"Payment"> | string
   stripeEventId?: Prisma.StringNullableFilter<"Payment"> | string | null
+  invoiceUrl?: Prisma.StringNullableFilter<"Payment"> | string | null
   amount?: Prisma.FloatFilter<"Payment"> | number
   transactionId?: Prisma.StringFilter<"Payment"> | string
   status?: Prisma.EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
@@ -251,6 +259,7 @@ export type PaymentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   appointmentId?: Prisma.SortOrder
   stripeEventId?: Prisma.SortOrderInput | Prisma.SortOrder
+  invoiceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -267,6 +276,7 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   OR?: Prisma.PaymentWhereInput[]
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
+  invoiceUrl?: Prisma.StringNullableFilter<"Payment"> | string | null
   amount?: Prisma.FloatFilter<"Payment"> | number
   transactionId?: Prisma.StringFilter<"Payment"> | string
   status?: Prisma.EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
@@ -280,6 +290,7 @@ export type PaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   appointmentId?: Prisma.SortOrder
   stripeEventId?: Prisma.SortOrderInput | Prisma.SortOrder
+  invoiceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -300,6 +311,7 @@ export type PaymentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   appointmentId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   stripeEventId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
+  invoiceUrl?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   amount?: Prisma.FloatWithAggregatesFilter<"Payment"> | number
   transactionId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   status?: Prisma.EnumPaymentStatusWithAggregatesFilter<"Payment"> | $Enums.PaymentStatus
@@ -311,6 +323,7 @@ export type PaymentScalarWhereWithAggregatesInput = {
 export type PaymentCreateInput = {
   id?: string
   stripeEventId?: string | null
+  invoiceUrl?: string | null
   amount: number
   transactionId: string
   status: $Enums.PaymentStatus
@@ -324,6 +337,7 @@ export type PaymentUncheckedCreateInput = {
   id?: string
   appointmentId: string
   stripeEventId?: string | null
+  invoiceUrl?: string | null
   amount: number
   transactionId: string
   status: $Enums.PaymentStatus
@@ -335,6 +349,7 @@ export type PaymentUncheckedCreateInput = {
 export type PaymentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   transactionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -348,6 +363,7 @@ export type PaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentId?: Prisma.StringFieldUpdateOperationsInput | string
   stripeEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   transactionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -360,6 +376,7 @@ export type PaymentCreateManyInput = {
   id?: string
   appointmentId: string
   stripeEventId?: string | null
+  invoiceUrl?: string | null
   amount: number
   transactionId: string
   status: $Enums.PaymentStatus
@@ -371,6 +388,7 @@ export type PaymentCreateManyInput = {
 export type PaymentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   transactionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -383,6 +401,7 @@ export type PaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentId?: Prisma.StringFieldUpdateOperationsInput | string
   stripeEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   transactionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -400,6 +419,7 @@ export type PaymentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   appointmentId?: Prisma.SortOrder
   stripeEventId?: Prisma.SortOrder
+  invoiceUrl?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -416,6 +436,7 @@ export type PaymentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   appointmentId?: Prisma.SortOrder
   stripeEventId?: Prisma.SortOrder
+  invoiceUrl?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -427,6 +448,7 @@ export type PaymentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   appointmentId?: Prisma.SortOrder
   stripeEventId?: Prisma.SortOrder
+  invoiceUrl?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -473,6 +495,7 @@ export type PaymentUncheckedUpdateOneWithoutAppoitnmentNestedInput = {
 export type PaymentCreateWithoutAppoitnmentInput = {
   id?: string
   stripeEventId?: string | null
+  invoiceUrl?: string | null
   amount: number
   transactionId: string
   status: $Enums.PaymentStatus
@@ -484,6 +507,7 @@ export type PaymentCreateWithoutAppoitnmentInput = {
 export type PaymentUncheckedCreateWithoutAppoitnmentInput = {
   id?: string
   stripeEventId?: string | null
+  invoiceUrl?: string | null
   amount: number
   transactionId: string
   status: $Enums.PaymentStatus
@@ -511,6 +535,7 @@ export type PaymentUpdateToOneWithWhereWithoutAppoitnmentInput = {
 export type PaymentUpdateWithoutAppoitnmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   transactionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -522,6 +547,7 @@ export type PaymentUpdateWithoutAppoitnmentInput = {
 export type PaymentUncheckedUpdateWithoutAppoitnmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   transactionId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
@@ -536,6 +562,7 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   appointmentId?: boolean
   stripeEventId?: boolean
+  invoiceUrl?: boolean
   amount?: boolean
   transactionId?: boolean
   status?: boolean
@@ -549,6 +576,7 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   appointmentId?: boolean
   stripeEventId?: boolean
+  invoiceUrl?: boolean
   amount?: boolean
   transactionId?: boolean
   status?: boolean
@@ -562,6 +590,7 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   appointmentId?: boolean
   stripeEventId?: boolean
+  invoiceUrl?: boolean
   amount?: boolean
   transactionId?: boolean
   status?: boolean
@@ -575,6 +604,7 @@ export type PaymentSelectScalar = {
   id?: boolean
   appointmentId?: boolean
   stripeEventId?: boolean
+  invoiceUrl?: boolean
   amount?: boolean
   transactionId?: boolean
   status?: boolean
@@ -583,7 +613,7 @@ export type PaymentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "appointmentId" | "stripeEventId" | "amount" | "transactionId" | "status" | "paymentGatewayData" | "createdAt" | "updatedAt", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "appointmentId" | "stripeEventId" | "invoiceUrl" | "amount" | "transactionId" | "status" | "paymentGatewayData" | "createdAt" | "updatedAt", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appoitnment?: boolean | Prisma.AppointmentDefaultArgs<ExtArgs>
 }
@@ -603,6 +633,7 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     appointmentId: string
     stripeEventId: string | null
+    invoiceUrl: string | null
     amount: number
     transactionId: string
     status: $Enums.PaymentStatus
@@ -1036,6 +1067,7 @@ export interface PaymentFieldRefs {
   readonly id: Prisma.FieldRef<"Payment", 'String'>
   readonly appointmentId: Prisma.FieldRef<"Payment", 'String'>
   readonly stripeEventId: Prisma.FieldRef<"Payment", 'String'>
+  readonly invoiceUrl: Prisma.FieldRef<"Payment", 'String'>
   readonly amount: Prisma.FieldRef<"Payment", 'Float'>
   readonly transactionId: Prisma.FieldRef<"Payment", 'String'>
   readonly status: Prisma.FieldRef<"Payment", 'PaymentStatus'>

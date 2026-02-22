@@ -1,19 +1,20 @@
 import { AppError } from "./AppError";
 import { mailTransport } from "./mailTransporter";
 
-type MailType = 'verify' | 'reset' | 'prescription-email';
+type MailType = 'verify' | 'reset' | 'prescription-email' | "payment-succces";
 
 interface MailData {
     email: string;
-    name: string;
+    name?: string;
     link?: string;
     type: MailType;
     html?:any
 }
 
 async function sendMail(data: MailData) {
-    console.log(data);
-    
+  
+console.log(    "sending mail");
+
     try {
         const isVerify = data.type === 'verify';
         

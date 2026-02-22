@@ -10,10 +10,10 @@ const emailWorker = new Worker(
       case "prescription-email":
         const prescriptionData = job.data;
 
-        const templatePath = `${process.cwd()}/src/templates/prescription-email.ejs`
+        const prescriptionTemplate = `${process.cwd()}/src/templates/prescription-email.ejs`
 
         // 3. Render the HTML
-        const htmlContent = await ejs.renderFile(templatePath,
+        const prescriptionHtmlContent = await ejs.renderFile(prescriptionTemplate,
           prescriptionData
         );
 
@@ -21,7 +21,7 @@ const emailWorker = new Worker(
           email: prescriptionData.patientEmail,
           name: prescriptionData.patientName,
           type: "prescription-email",
-          html: htmlContent
+          html: prescriptionHtmlContent
         })
 
         break;
@@ -41,6 +41,24 @@ const emailWorker = new Worker(
         })
         break;
 
+        case "payment-succces":
+
+
+
+        const paymentData = job.data;
+
+          const paymentTemplatePath = `${process.cwd()}/src/templates/payment.ejs`
+
+        // 3. Render the HTML
+        const paymentHtmlContent = await ejs.renderFile(paymentTemplatePath,
+          paymentData
+        );
+          await mailServices.sendMail({
+          email: paymentData.patientEmail,
+          type: "payment-succces",
+          html:paymentHtmlContent
+        })
+        break
 
       default:
         break;
