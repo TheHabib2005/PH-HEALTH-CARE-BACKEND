@@ -70,6 +70,10 @@ const getDoctorById = async (id: string) => {
       title: item.specialty.title,
       icon: item.specialty.icon,
     })),
+    schedules:doctor.schedule.map((sc)=>sc.schedule.doctorsSchedule.map((dc)=> ({
+      isBooked:dc.isBooked,
+       ...dc.schedule
+    }))).flat()
   };
 
   delete (formattedDoctor as any).specialty;
