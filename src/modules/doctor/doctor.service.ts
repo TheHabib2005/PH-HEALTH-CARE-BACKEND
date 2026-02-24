@@ -12,9 +12,9 @@ const getDoctorById = async (id: string) => {
   const cacheKey = doctorCacheById(id);
 
   const cachedDoctor = await redis.get(cacheKey);
-  // if (cachedDoctor) {
-  //   return JSON.parse(cachedDoctor);
-  // }
+  if (cachedDoctor) {
+    return JSON.parse(cachedDoctor);
+  }
 
   const doctor = await prisma.doctor.findUnique({
     where: {
